@@ -4,4 +4,12 @@
     <string name="keystore">Keystore</string>
     <string name="mnemonic">Mnemonic</string>
     <string name="private_key">Private Key</string>
+
+    <string name="wallet_address">wallet_address</string>
+    <string name="wallet_name">wallet_name</string>
+    <string name="wallet_password">wallet_password</string>
+    <string name="wallet_keystore">wallet_keystore</string>
+    <string name="wallet_keystore_path">wallet_keystore_path</string>
+    <string name="wallet_mnemonic">wallet_mnemonic</string>
+    <string name="wallet_private_key">wallet_private_key</string>
 </resources>
