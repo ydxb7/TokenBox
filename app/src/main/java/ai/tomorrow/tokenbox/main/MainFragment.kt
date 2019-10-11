@@ -26,7 +26,7 @@ class MainFragment : Fragment() {
         binding.addWalletBtn.setOnClickListener {
             Log.d(TAG, "addWalletBtn clicked")
             val direction =
-                MainFragmentDirections.actionMianFragmentToImportWalletViewPagerFragment()
+                MainFragmentDirections.actionMainFragmentToImportWalletFragment()
             it.findNavController().navigate(direction)
         }
 

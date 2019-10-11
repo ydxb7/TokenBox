@@ -8,18 +8,18 @@
         android:name="ai.tomorrow.tokenbox.main.MainFragment"
         android:label="MianFragment" >
         <action
-            android:id="@+id/action_mianFragment_to_importWalletViewPagerFragment"
-            app:destination="@id/importWalletViewPagerFragment" />
-        <action
             android:id="@+id/action_mainFragment_to_sendEthFragment"
             app:destination="@id/sendEthFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_importWalletFragment"
+            app:destination="@id/importWalletFragment" />
     </fragment>
     <fragment
-        android:id="@+id/importWalletViewPagerFragment"
-        android:name="ai.tomorrow.tokenjar.ImportWalletViewPagerFragment"
-        android:label="ImportWalletViewPagerFragment" />
-    <fragment
         android:id="@+id/sendEthFragment"
-        android:name="ai.tomorrow.tokenbox.SendEthFragment"
+        android:name="ai.tomorrow.tokenbox.send.SendEthFragment"
         android:label="SendEthFragment" />
+    <fragment
+        android:id="@+id/importWalletFragment"
+        android:name="ai.tomorrow.tokenjar.ImportWalletFragment"
+        android:label="ImportWalletFragment" />
 </navigation>

@@ -1,4 +1,4 @@
-package ai.tomorrow.tokenbox
+package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.databinding.FragmentSendEthBinding
 import android.os.Bundle
