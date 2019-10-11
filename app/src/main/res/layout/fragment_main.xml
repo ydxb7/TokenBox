@@ -60,6 +60,7 @@
                             android:textColor="@color/black"
                             android:textSize="20sp"
                             android:textStyle="bold"
+                            android:text="@{viewModel.myWalletName}"
                             tools:text="wallet name" />
 
                         <TextView
@@ -67,6 +68,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/walletNameTv"
                             android:layout_centerHorizontal="true"
+                            android:text="@{viewModel.myAddress}"
                             tools:text="0x3bAF...FD" />
 
                     </RelativeLayout>

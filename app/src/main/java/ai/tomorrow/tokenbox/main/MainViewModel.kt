@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
 
-class MainViewModel (val application: Application) : ViewModel() {
+class MainViewModel (private val application: Application) : ViewModel() {
 
     private val TAG = "MainViewModel"
 
@@ -21,6 +21,11 @@ class MainViewModel (val application: Application) : ViewModel() {
     private val _myAddress = MutableLiveData<String>()
     val myAddress: LiveData<String>
         get() = _myAddress
+
+    private val _myWalletName = MutableLiveData<String>()
+    val myWalletName: LiveData<String>
+        get() = _myWalletName
+
 
     init {
         Log.d(TAG, "init")
@@ -33,6 +38,12 @@ class MainViewModel (val application: Application) : ViewModel() {
         Log.d(TAG, "updateMyWallet")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
         _myAddress.value = sharedPreferences.getString(application.getString(R.string.wallet_address), "")?:""
+        _myWalletName.value = sharedPreferences.getString(application.getString(R.string.wallet_name), "")?:""
+
+
+
+
+
         Log.d(TAG, "_myAddress.value = ${_myAddress.value}")
 
 
