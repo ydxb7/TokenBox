@@ -7,9 +7,9 @@
 
     <data>
 
-<!--        <variable-->
-<!--            name="hasWallet"-->
-<!--            type="boolean" />-->
+        <variable
+            name="hasWallet"
+            type="boolean" />
 
         <!--        <variable-->
         <!--            name="viewModel"-->
@@ -89,6 +89,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/black"
+                app:isGone="@{!hasWallet}"
                 android:textSize="30sp" />
 
             <Button
@@ -101,6 +102,7 @@
                 android:background="@drawable/send_button"
                 android:text="send"
                 android:textColor="@color/secondaryDarkColor"
+                app:isGone="@{!hasWallet}"
                 android:textSize="20dp" />
 
             <TextView
@@ -112,12 +114,14 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
                 android:text="History"
+                app:isGone="@{!hasWallet}"
                 android:textSize="16sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/historyRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:isGone="@{!hasWallet}"
                 android:layout_below="@id/historyTv" />
 
             <TextView
@@ -125,6 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="You have no wallet"
+                app:isGone="@{hasWallet}"
                 android:textSize="35sp" />
 
         </RelativeLayout>
