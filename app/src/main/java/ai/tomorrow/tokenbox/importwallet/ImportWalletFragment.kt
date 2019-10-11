@@ -1,5 +1,6 @@
 package ai.tomorrow.tokenjar
 
+import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.databinding.FragmentImportWalletBinding
 import android.os.Bundle
 import android.util.Log
@@ -20,8 +21,8 @@ import org.consenlabs.tokencore.wallet.model.Network
 import java.io.File
 import android.content.SharedPreferences
 import android.R.attr.password
-import android.R
-
+import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 
 
 class ImportWalletFragment : Fragment(), KeystoreStorage {
@@ -52,7 +53,6 @@ class ImportWalletFragment : Fragment(), KeystoreStorage {
                 it.findNavController().navigateUp()
             }
         }
-
 
 
 
@@ -116,25 +116,50 @@ class ImportWalletFragment : Fragment(), KeystoreStorage {
         Log.d(TAG, "wallet.mnemonic = $mnemonic")
         Log.d(TAG, "wallet.name = $name")
 
-//
-//        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-//        val editor = sharedPreferences.edit()
-//        editor.putString(requireActivity().getString(ai.tomorrow.tokenbox.R.string.wallet_address), address)
-//
-//
-//        val seeAddress = sharedPreferences.getString(context?.getString(ai.tomorrow.tokenbox.R.string.wallet_address), address)
-//        Log.d(TAG, "see address form preference: $seeAddress")
+
+        saveWalletInPreference(
+            address,
+            name,
+            password,
+            passwordHint,
+            keystore,
+            keystorePath,
+            mnemonic,
+            privateKey
+        )
 
     }
 
-    private fun saveWalletInfoToPreference(){
+    private fun saveWalletInPreference(
+        address: String,
+        name: String,
+        password: String,
+        passwordHint: String,
+        keystore: String?,
+        keystorePath: String,
+        mnemonic: String?,
+        privateKey: String?
+    ) {
+        Log.d(TAG, "saveWalletInPreference")
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        sharedPreferences.edit {
+            putString(getString(R.string.wallet_address), address)
+            putString(getString(R.string.wallet_name), name)
+            putString(getString(R.string.wallet_password), password)
+            putString(getString(R.string.wallet_password_hint), passwordHint)
+            putString(getString(R.string.wallet_keystore), keystore)
+            putString(getString(R.string.wallet_keystore_path), keystorePath)
+            putString(getString(R.string.wallet_mnemonic), mnemonic)
+            putString(getString(R.string.wallet_private_key), privateKey)
+        }
 
+        Log.d(TAG, "address form preference: ${sharedPreferences.getString(getString(R.string.wallet_address), "")}")
+        Log.d(TAG, "name form preference: ${sharedPreferences.getString(getString(R.string.wallet_name), "")}")
+        Log.d(TAG, "password form preference: ${sharedPreferences.getString(getString(R.string.wallet_password), "")}")
+        Log.d(TAG, "mnemonic form preference: ${sharedPreferences.getString(getString(R.string.wallet_mnemonic), "")}")
     }
-
 
     override fun getKeystoreDir(): File {
-//        Log.d(TAG, "getKeystoreDir = $filesDir")
         return requireActivity().filesDir
-
     }
 }

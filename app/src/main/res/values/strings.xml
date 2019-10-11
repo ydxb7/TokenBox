@@ -8,6 +8,7 @@
     <string name="wallet_address">wallet_address</string>
     <string name="wallet_name">wallet_name</string>
     <string name="wallet_password">wallet_password</string>
+    <string name="wallet_password_hint">wallet_password_hint</string>
     <string name="wallet_keystore">wallet_keystore</string>
     <string name="wallet_keystore_path">wallet_keystore_path</string>
     <string name="wallet_mnemonic">wallet_mnemonic</string>
