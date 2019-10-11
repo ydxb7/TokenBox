@@ -17,12 +17,26 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'lib/x86_64/darwin/libscrypt.dylib'
+
+    }
+
+    lintOptions {
+        abortOnError false
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -57,5 +71,24 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
+
+
+    // web3j
+    implementation 'org.web3j:core:4.1.0-android'
+    implementation 'org.bitcoinj:bitcoinj-core:0.14.7'
+
+    // TokenCore
+    implementation 'com.github.consenlabs:token-core-android:v0.1'
+
+    implementation 'com.google.guava:guava:27.0.1-android'
+
+
+
+    // Koin AndroidX Scope features
+    implementation "org.koin:koin-androidx-scope:2.0.1"
+// Koin AndroidX ViewModel features
+    implementation "org.koin:koin-androidx-viewmodel:2.0.1"
+// Koin AndroidX Experimental features
+    implementation "org.koin:koin-androidx-ext:2.0.1"
 }
 
