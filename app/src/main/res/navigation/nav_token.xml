@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_token"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="ai.tomorrow.tokenbox.main.MainFragment"
+        android:label="MianFragment" >
+        <action
+            android:id="@+id/action_mianFragment_to_importWalletViewPagerFragment"
+            app:destination="@id/importWalletViewPagerFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_sendEthFragment"
+            app:destination="@id/sendEthFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/importWalletViewPagerFragment"
+        android:name="ai.tomorrow.tokenjar.ImportWalletViewPagerFragment"
+        android:label="ImportWalletViewPagerFragment" />
+    <fragment
+        android:id="@+id/sendEthFragment"
+        android:name="ai.tomorrow.tokenbox.SendEthFragment"
+        android:label="SendEthFragment" />
+</navigation>

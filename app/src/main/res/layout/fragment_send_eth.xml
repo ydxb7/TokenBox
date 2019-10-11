@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+            <!--            Toolbar            -->
+            <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/app_bar_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/defaultWalletToolBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                        <ImageView
+                                android:id="@+id/backBtn"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_centerVertical="true"
+                                android:padding="10dp"
+                                android:src="@drawable/back_icon" />
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:text="Send ETH"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+
+                    </RelativeLayout>
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <TextView
+                    android:id="@+id/recipientAddressTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/app_bar_layout"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/white"
+                    android:paddingStart="24dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:text="Recipient Address" />
+
+            <EditText
+                    android:id="@+id/recipientAddressEv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/recipientAddressTv"
+                    android:background="@drawable/grey_border_round_rectangle"
+                    android:padding="12dp"
+                    android:layout_margin="24dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    tools:text="0x3bAF284A4b65B4B0f1DF372e10E442ea837d6fFD" />
+
+            <TextView
+                    android:id="@+id/assetTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/recipientAddressEv"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Balance:"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+            <TextView
+                    android:id="@+id/balanceTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/recipientAddressEv"
+                    android:layout_marginStart="130dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/grey_border_round_rectangle"
+                    android:padding="12dp"
+                    android:textColor="@color/darkGrey"
+                    android:textSize="24sp"
+                    tools:text="5.5 ETH" />
+
+            <TextView
+                    android:id="@+id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/balanceTv"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Amount:"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+            <EditText
+                    android:id="@+id/amountEv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/balanceTv"
+                    android:layout_marginStart="130dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/grey_border_round_rectangle"
+                    android:hint="0 ETH"
+                    android:inputType="numberDecimal"
+                    android:padding="12dp"
+                    android:textColor="@color/darkGrey"
+                    android:textSize="24sp" />
+
+            <TextView
+                    android:id="@+id/text3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/amountEv"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Amount:"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+            <EditText
+                    android:id="@+id/gasEv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/amountEv"
+                    android:layout_marginStart="130dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/grey_border_round_rectangle"
+                    android:hint="0 wei"
+                    android:inputType="numberDecimal"
+                    android:padding="12dp"
+                    android:textColor="@color/darkGrey"
+                    android:textSize="24sp" />
+
+            <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/gasEv"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/white"
+                    android:text="send"
+                    android:textSize="20sp"
+                    android:background="@drawable/blue_round_corner_rectangle" />
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="send ETH"
+                    android:textSize="30sp" />
+
+        </RelativeLayout>
+    </FrameLayout>
+
+</layout>

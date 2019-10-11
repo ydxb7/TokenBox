@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+            android:id="@+id/coordinator_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+        <!--            Toolbar            -->
+        <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+            <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/defaultWalletToolBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <ImageView
+                            android:id="@+id/backBtn"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_centerVertical="true"
+                            android:padding="10dp"
+                            android:src="@drawable/back_icon" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="Import Wallet"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+
+                </RelativeLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout"
+                android:layout_below="@id/app_bar_layout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:theme="@style/AppBarOverlay">
+
+            <!-- Override tabIconTint attribute of style with selector -->
+            <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabs"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabIconTint="@drawable/tab_icon_color_selector"
+                    app:tabTextColor="@drawable/tab_icon_color_selector"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/app_bar_layout"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+
+
+    </RelativeLayout>
+
+</layout>

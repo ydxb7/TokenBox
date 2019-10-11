@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TokenBox</string>
+
+    <string name="keystore">Keystore</string>
+    <string name="mnemonic">Mnemonic</string>
+    <string name="private_key">Private Key</string>
+</resources>
