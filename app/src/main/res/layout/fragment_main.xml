@@ -11,6 +11,10 @@
             name="hasWallet"
             type="boolean" />
 
+        <variable
+            name="viewModel"
+            type="ai.tomorrow.tokenbox.main.MainViewModel" />
+
         <!--        <variable-->
         <!--            name="viewModel"-->
         <!--            type="ai.tomorrow.tokenjar.defaultwallet.DefaultWalletViewModel" />-->

@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 
@@ -26,6 +28,28 @@ class MainFragment : Fragment() {
     ): View? {
         Log.d(TAG, "onCreateView")
         binding = FragmentMainBinding.inflate(inflater, container, false)
+
+        val application = requireNotNull(this.activity).application
+
+        val viewModelFactory = MainViewModelFactory(application)
+
+        val viewModel = ViewModelProviders.of(
+                this, viewModelFactory).get(MainViewModel::class.java)
+
+        binding.viewModel = viewModel
+
+        binding.lifecycleOwner = this
+
+        viewModel.myAddress.observe(this, Observer {
+            binding.hasWallet = it != null
+        })
+
+
+
+
+
+
+
 
         binding.addWalletBtn.setOnClickListener {
             Log.d(TAG, "addWalletBtn clicked")
@@ -48,11 +72,7 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        myAddress = sharedPreferences.getString(getString(R.string.wallet_address), "")?:""
-        binding.hasWallet = (myAddress != "")
-
-
+        binding.viewModel?.updateMyWallet()
     }
 
 
