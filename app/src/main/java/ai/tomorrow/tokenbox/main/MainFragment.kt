@@ -1,9 +1,6 @@
 package ai.tomorrow.tokenbox.main
 
-import ai.tomorrow.tokenbox.R
-import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.HistoryDatabase
-import ai.tomorrow.tokenbox.data.asDatabaseModel
 import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.WriterException
+import com.journeyapps.barcodescanner.BarcodeEncoder
+
 
 class MainFragment : Fragment() {
 
@@ -44,7 +46,6 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
-
         val adapter = HistoryRecyclerViewAdapter(ArrayList())
         binding.historyRecyclerView.adapter = adapter
 
@@ -53,7 +54,7 @@ class MainFragment : Fragment() {
             Log.d(TAG, "histories in the dataset = $it")
             Log.d(TAG, "histories in the dataset.size = ${it.size}")
 
-            if (!it.isNullOrEmpty()){
+            if (!it.isNullOrEmpty()) {
                 Log.d(TAG, "XXX first  = ${it[0].value}")
                 Log.d(TAG, "XXX histories in the dataset.size = ${it.size}")
                 adapter.setData(it)
@@ -84,9 +85,37 @@ class MainFragment : Fragment() {
         binding.sendBtn.setOnClickListener {
             Log.d(TAG, "sendBtn clicked")
             val direction = MainFragmentDirections.actionMainFragmentToSendEthFragment(
-                viewModel.balance.value?:"0 ETH"
-                )
+                viewModel.balance.value ?: "0 ETH"
+            )
             it.findNavController().navigate(direction)
+        }
+
+
+        binding.depositBtn.setOnClickListener {
+            Log.d(TAG, "depositBtn clicked")
+
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val myAddress = sharedPreferences.getString(
+                getString(ai.tomorrow.tokenbox.R.string.wallet_address),
+                ""
+            )
+
+            if (!myAddress.isNullOrEmpty()) {
+                try {
+                    val multiFormatWriter = MultiFormatWriter()
+                    val bitMatrix =
+                        multiFormatWriter.encode(myAddress, BarcodeFormat.QR_CODE, 200, 200)
+                    val barcodeEncoder = BarcodeEncoder()
+                    val bitmap = barcodeEncoder.createBitmap(bitMatrix)
+                    val direction =
+                        MainFragmentDirections.actionMainFragmentToQrcodeDialogFragment(bitmap)
+                    it.findNavController().navigate(direction)
+
+                } catch (e: WriterException) {
+                    Log.d(TAG, e.message)
+                }
+            }
+
         }
 
 

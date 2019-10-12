@@ -100,11 +100,25 @@
                 android:textSize="30sp" />
 
             <Button
+                android:id="@+id/depositBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/balanceTv"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/send_button"
+                android:text="deposit"
+                android:layout_marginStart="70dp"
+                android:textColor="@color/secondaryDarkColor"
+                app:isGone="@{!hasWallet}"
+                android:textSize="20dp" />
+
+            <Button
                 android:id="@+id/sendBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/balanceTv"
-                android:layout_centerHorizontal="true"
+                android:layout_marginEnd="80dp"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/send_button"
                 android:text="send"
