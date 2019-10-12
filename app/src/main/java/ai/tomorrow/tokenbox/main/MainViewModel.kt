@@ -98,6 +98,7 @@ class MainViewModel(
             withContext(Dispatchers.IO) {
                 mutex.withLock {
                     database.clear()
+                    getBalance()
                     fetchDataFromNetAndUpdateDatabase(address)
                 }
             }
