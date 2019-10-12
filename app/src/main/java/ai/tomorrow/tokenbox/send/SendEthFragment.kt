@@ -28,6 +28,7 @@ import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
+import java.math.BigDecimal
 import java.math.BigInteger
 
 
@@ -40,14 +41,207 @@ class SendEthFragment : Fragment() {
     private val TAG = "SendEthFragment"
 
     private lateinit var binding: FragmentSendEthBinding
-    private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
-    var gasCount = 21000
-    private val uiScope = CoroutineScope(Dispatchers.Main)
-    private var uiHandler = Handler()
-    private lateinit var gasPriceWei: BigInteger
-
     private var toast: String? = null
 
+    private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
+
+    // cototine
+    private val uiScope = CoroutineScope(Dispatchers.Main)
+    private var uiHandler = Handler()
+
+    // vars
+    var gasCount = 21000
+    private lateinit var gasPriceWei: BigInteger
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d(TAG, "onCreateView")
+        binding = FragmentSendEthBinding.inflate(inflater, container, false)
+
+        // get balance from bundle
+        val balanceString = SendEthFragmentArgs.fromBundle(arguments!!).balance
+        val balance = balanceString.split(" ")[0].toBigDecimal()
+        val balanceWei = Convert.toWei(balance, Convert.Unit.ETHER).toBigInteger()
+
+        // get wallet info from preference
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val keystorePath =
+            sharedPreferences.getString(getString(R.string.wallet_keystore_path), "") ?: ""
+        val password = sharedPreferences.getString(getString(R.string.wallet_password), "") ?: ""
+        val myAddress = sharedPreferences.getString(getString(R.string.wallet_address), "") ?: ""
+
+        // get gas price
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+                val gasprice = web3j.ethGasPrice().send().gasPrice
+                uiHandler.post {
+                    gasPriceWei = gasprice
+                    val gasPriceShow = "${gasPriceWei.toBigDecimal().divide(BigDecimal("1000000000"))} GWEI"
+
+                    binding.gasPriceTV.text = gasPriceShow
+                }
+            }
+        }
+
+        setupWidgets(balanceString, balanceWei, password, keystorePath, myAddress)
+
+        return binding.root
+    }
+
+    private fun setupWidgets(
+        balanceString: String,
+        balanceWei: BigInteger?,
+        password: String,
+        keystorePath: String,
+        myAddress: String
+    ) {
+        binding.balanceTv.text = balanceString
+
+        // scan qr
+        binding.scanIv.setOnClickListener {
+            scanFromFragment()
+        }
+
+        // seekbar
+        binding.seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                Log.d(TAG, "onStopTrackingTouch")
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                Log.d(TAG, "onStartTrackingTouch")
+            }
+
+            override fun onProgressChanged(
+                seekBar: SeekBar, progress: Int,
+                fromUser: Boolean
+            ) {
+                Log.d(TAG, "onProgressChanged")
+                gasCount = 11000 + progress
+                binding.gasLimitTV.text = gasCount.toString()
+            }
+        })
+
+        // send button
+        binding.sendBtn.setOnClickListener {
+            Log.d(TAG, "sendBtn clicked")
+
+            uiScope.launch {
+                withContext(Dispatchers.IO) {
+                    // get transaction info
+                    val toAddress = binding.recipientAddressEv.text.toString()
+
+                    val amount = binding.amountEv.text.toString().toBigDecimal()
+
+                    val amountWei = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
+                    val gasLimitBigInteger = gasCount.toBigInteger()
+                    val costWei = amountWei.add(gasPriceWei.multiply(gasLimitBigInteger))
+
+                    if (costWei > balanceWei) {
+                        Log.d(TAG, "costWei > balanceWei")
+                        uiHandler.post {
+                            Toast.makeText(context, "Insufficient balance", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    } else {
+                        makeTransaction(
+                            password,
+                            keystorePath,
+                            myAddress,
+                            gasLimitBigInteger,
+                            toAddress,
+                            amountWei,
+                            it
+                        )
+                    }
+                }
+            }
+        }
+
+        // back button
+        binding.backBtn.setOnClickListener {
+            it.findNavController().navigateUp()
+        }
+    }
+
+    private fun makeTransaction(
+        password: String,
+        keystorePath: String,
+        myAddress: String,
+        gasLimitBigInteger: BigInteger,
+        toAddress: String,
+        amountWei: BigInteger?,
+        it: View
+    ): Boolean {
+        // sendTransaction
+        val transactionHash = sendTransaction(
+            password,
+            keystorePath,
+            myAddress,
+            gasLimitBigInteger,
+            toAddress,
+            amountWei
+        )
+
+        // toast
+        return uiHandler.post {
+            if (transactionHash != null) {
+                Log.d(TAG, "You have successfully send a transaction!")
+                Toast.makeText(
+                    context,
+                    "You have successfully send a transaction!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                it.findNavController().navigateUp()
+            } else {
+                Log.d(TAG, "Transaction failed!")
+                Toast.makeText(context, "Transaction failed!", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+    private fun sendTransaction(
+        password: String,
+        keystorePath: String,
+        myAddress: String,
+        gasLimitBigInteger: BigInteger,
+        toAddress: String,
+        amountWei: BigInteger?
+    ): String? {
+        Log.d(TAG, "sendTransaction: ")
+
+        // get transaction message
+        val credentials = WalletUtils.loadCredentials(password, keystorePath)
+        val ethGetTransactionCount = web3j.ethGetTransactionCount(
+            myAddress, DefaultBlockParameterName.LATEST
+        ).send()
+        val nonce = ethGetTransactionCount.transactionCount
+
+        val rawTransaction = RawTransaction.createEtherTransaction(
+            nonce,
+            gasPriceWei,
+            gasLimitBigInteger,
+            toAddress,
+            amountWei
+        )
+
+        // sign
+        val signedMessage =
+            TransactionEncoder.signMessage(rawTransaction, credentials)
+
+        val hexValue = Numeric.toHexString(signedMessage)
+        val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send()
+
+        val transactionHash = ethSendTransaction.transactionHash
+        return transactionHash
+    }
+
+    //------------------------------ QR ---------------------------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         Log.d(TAG, "onActivityCreated: ")
@@ -80,164 +274,4 @@ class SendEthFragment : Fragment() {
             }
         }
     }
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentSendEthBinding.inflate(inflater, container, false)
-        val balanceString = SendEthFragmentArgs.fromBundle(arguments!!).balance
-
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val keystorePath =
-            sharedPreferences.getString(getString(R.string.wallet_keystore_path), "") ?: ""
-        val password = sharedPreferences.getString(getString(R.string.wallet_password), "") ?: ""
-        val myAddress = sharedPreferences.getString(getString(R.string.wallet_address), "") ?: ""
-
-        val balance = balanceString.split(" ")[0].toBigDecimal()
-        val balanceWei = Convert.toWei(balance, Convert.Unit.ETHER).toBigInteger()
-
-
-        uiScope.launch {
-            withContext(Dispatchers.IO) {
-                val gasprice = web3j.ethGasPrice().send().gasPrice
-                uiHandler.post {
-                    gasPriceWei = gasprice
-                    binding.gasPriceTV.text = gasPriceWei.toString()
-                }
-            }
-        }
-
-
-        setupWidgets(balanceString, balanceWei, password, keystorePath, myAddress)
-
-        binding.scanIv.setOnClickListener {
-            scanFromFragment()
-        }
-
-
-        return binding.root
-    }
-
-    private fun setupWidgets(
-        balanceString: String,
-        balanceWei: BigInteger?,
-        password: String,
-        keystorePath: String,
-        myAddress: String
-    ) {
-        binding.balanceTv.text = balanceString
-
-        binding.seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                Log.d(TAG, "onStopTrackingTouch")
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-                Log.d(TAG, "onStartTrackingTouch")
-            }
-
-            override fun onProgressChanged(
-                seekBar: SeekBar, progress: Int,
-                fromUser: Boolean
-            ) {
-                Log.d(TAG, "onProgressChanged")
-                gasCount = 11000 + progress
-                binding.gasLimitTV.text = gasCount.toString()
-            }
-        })
-
-
-        binding.sendBtn.setOnClickListener {
-            Log.d(TAG, "sendBtn clicked")
-
-
-            uiScope.launch {
-                withContext(Dispatchers.IO) {
-                    val toAddress = binding.recipientAddressEv.text.toString()
-
-                    val amount = binding.amountEv.text.toString().toBigDecimal()
-
-                    val amountWei = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
-                    val gasLimitBigInteger = gasCount.toBigInteger()
-                    val costWei = amountWei.add(gasPriceWei.multiply(gasLimitBigInteger))
-
-                    if (costWei > balanceWei) {
-                        Log.d(TAG, "costWei > balanceWei")
-                        uiHandler.post {
-                            Toast.makeText(context, "Insufficient balance", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    } else {
-                        val transactionHash = sendTransaction(
-                            password,
-                            keystorePath,
-                            myAddress,
-                            gasLimitBigInteger,
-                            toAddress,
-                            amountWei
-                        )
-
-                        uiHandler.post {
-                            if (transactionHash != null) {
-                                Log.d(TAG, "You have successfully send a transaction!")
-                                Toast.makeText(
-                                    context,
-                                    "You have successfully send a transaction!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                it.findNavController().navigateUp()
-                            } else {
-                                Log.d(TAG, "Transaction failed!")
-                                Toast.makeText(context, "Transaction failed!", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-
-        binding.backBtn.setOnClickListener {
-            it.findNavController().navigateUp()
-        }
-    }
-
-    private fun sendTransaction(
-        password: String,
-        keystorePath: String,
-        myAddress: String,
-        gasLimitBigInteger: BigInteger,
-        toAddress: String,
-        amountWei: BigInteger?
-    ): String? {
-        val credentials = WalletUtils.loadCredentials(password, keystorePath)
-        val ethGetTransactionCount = web3j.ethGetTransactionCount(
-            myAddress, DefaultBlockParameterName.LATEST
-        ).send()
-        val nonce = ethGetTransactionCount.transactionCount
-
-
-        val rawTransaction = RawTransaction.createEtherTransaction(
-            nonce,
-            gasPriceWei,
-            gasLimitBigInteger,
-            toAddress,
-            amountWei
-        )
-        val signedMessage =
-            TransactionEncoder.signMessage(rawTransaction, credentials)
-
-        val hexValue = Numeric.toHexString(signedMessage)
-        val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send()
-
-        val transactionHash = ethSendTransaction.transactionHash
-        return transactionHash
-    }
-
-
 }

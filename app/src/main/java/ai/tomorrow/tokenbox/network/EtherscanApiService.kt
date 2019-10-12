@@ -11,11 +11,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 private const val BASE_URL = "http://api-ropsten.etherscan.io/"
-//private const val BASE_URL = "https://mars.udacity.com/"
-
 
 //private val retrofit = Retrofit.Builder()
 //    .addConverterFactory(ScalarsConverterFactory.create())
+//    .addCallAdapterFactory(CoroutineCallAdapterFactory())
 //    .baseUrl(BASE_URL)
 //    .build()
 

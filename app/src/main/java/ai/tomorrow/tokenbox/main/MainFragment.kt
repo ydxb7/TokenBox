@@ -1,6 +1,6 @@
 package ai.tomorrow.tokenbox.main
 
-import ai.tomorrow.tokenbox.QrcodeDialogFragment
+import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.data.HistoryDatabase
 import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
 import android.os.Bundle
@@ -27,6 +27,9 @@ class MainFragment : Fragment() {
 
     private var myAddress: String = ""
 
+    private lateinit var viewModel: MainViewModel
+    private lateinit var adapter: HistoryRecyclerViewAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,17 +43,23 @@ class MainFragment : Fragment() {
 
         val viewModelFactory = MainViewModelFactory(application, database)
 
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
         binding.viewModel = viewModel
 
         binding.lifecycleOwner = this
 
-
-        val adapter = HistoryRecyclerViewAdapter(ArrayList())
+        adapter = HistoryRecyclerViewAdapter(ArrayList())
         binding.historyRecyclerView.adapter = adapter
 
+        setupWidgets()
 
+        setupLiveData()
+
+        return binding.root
+    }
+
+    private fun setupLiveData() {
         viewModel.databaseHistories.observe(this, Observer {
             Log.d(TAG, "histories in the dataset = $it")
             Log.d(TAG, "histories in the dataset.size = ${it.size}")
@@ -72,8 +81,9 @@ class MainFragment : Fragment() {
             }
 
         })
+    }
 
-
+    private fun setupWidgets() {
         binding.addWalletBtn.setOnClickListener {
             Log.d(TAG, "addWalletBtn clicked")
             val direction =
@@ -102,7 +112,7 @@ class MainFragment : Fragment() {
 
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
             val myAddress = sharedPreferences.getString(
-                getString(ai.tomorrow.tokenbox.R.string.wallet_address),
+                getString(R.string.wallet_address),
                 ""
             )
 
@@ -119,17 +129,13 @@ class MainFragment : Fragment() {
                     bundle.putParcelable("qrcode", bitmap)
 
                     dialogFragment.arguments = bundle
-
                     dialogFragment.show(fragmentManager!!, QrcodeDialogFragment::class.simpleName)
-
 
                 } catch (e: WriterException) {
                     Log.d(TAG, e.message)
                 }
             }
         }
-
-        return binding.root
     }
 
     override fun onResume() {
