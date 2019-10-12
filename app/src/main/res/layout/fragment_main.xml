@@ -96,6 +96,7 @@
                 android:layout_marginTop="20dp"
                 android:textColor="@color/black"
                 app:isGone="@{!hasWallet}"
+                android:text="@{viewModel.balance}"
                 android:textSize="30sp" />
 
             <Button

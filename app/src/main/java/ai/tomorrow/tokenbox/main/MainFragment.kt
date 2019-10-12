@@ -1,6 +1,5 @@
 package ai.tomorrow.tokenbox.main
 
-import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
-import androidx.preference.PreferenceManager
 
 class MainFragment : Fragment() {
 
@@ -33,15 +31,21 @@ class MainFragment : Fragment() {
 
         val viewModelFactory = MainViewModelFactory(application)
 
-        val viewModel = ViewModelProviders.of(
-                this, viewModelFactory).get(MainViewModel::class.java)
+        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
         binding.viewModel = viewModel
 
         binding.lifecycleOwner = this
 
         viewModel.myAddress.observe(this, Observer {
-            binding.hasWallet = it != null
+            if (it != null) {
+                binding.hasWallet = true
+                viewModel.startPollingBalance()
+            } else {
+                binding.hasWallet = false
+                viewModel.stopPollingBalance()
+            }
+
         })
 
 
@@ -75,6 +79,9 @@ class MainFragment : Fragment() {
         binding.viewModel?.updateMyWallet()
     }
 
-
-
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause")
+        binding.viewModel?.stopPollingBalance()
+    }
 }
