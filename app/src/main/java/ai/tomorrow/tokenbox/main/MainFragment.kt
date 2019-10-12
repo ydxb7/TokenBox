@@ -1,5 +1,6 @@
 package ai.tomorrow.tokenbox.main
 
+import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.HistoryDatabase
 import ai.tomorrow.tokenbox.data.asDatabaseModel
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.preference.PreferenceManager
 
 class MainFragment : Fragment() {
 
@@ -59,13 +61,6 @@ class MainFragment : Fragment() {
 
         })
 
-//        viewModel.balance.observe(this, Observer {
-//            Log.d(TAG, "XXX the balance change, so get history again.")
-//            // the balance change, so get history again.
-//            viewModel.refreshHistoryDatabaseFromNetwork()
-//        })
-
-
         viewModel.myAddress.observe(this, Observer {
             if (it != null) {
                 binding.hasWallet = true
@@ -88,7 +83,12 @@ class MainFragment : Fragment() {
 
         binding.sendBtn.setOnClickListener {
             Log.d(TAG, "sendBtn clicked")
-            val direction = MainFragmentDirections.actionMainFragmentToSendEthFragment()
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val keystorePath = sharedPreferences.getString(getString(R.string.wallet_keystore_path), "")?:""
+            val direction = MainFragmentDirections.actionMainFragmentToSendEthFragment(
+                viewModel.balance.value?:"0 ETH",
+                keystorePath
+                )
             it.findNavController().navigate(direction)
         }
 

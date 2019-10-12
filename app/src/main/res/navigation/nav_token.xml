@@ -17,7 +17,14 @@
     <fragment
         android:id="@+id/sendEthFragment"
         android:name="ai.tomorrow.tokenbox.send.SendEthFragment"
-        android:label="SendEthFragment" />
+        android:label="SendEthFragment" >
+        <argument
+            android:name="balance"
+            app:argType="string" />
+        <argument
+            android:name="keystorePath"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/importWalletFragment"
         android:name="ai.tomorrow.tokenjar.ImportWalletFragment"
