@@ -2,6 +2,7 @@ package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.databinding.FragmentSendEthBinding
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -14,6 +15,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
+import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +45,42 @@ class SendEthFragment : Fragment() {
     private val uiScope = CoroutineScope(Dispatchers.Main)
     private var uiHandler = Handler()
     private lateinit var gasPriceWei: BigInteger
+
+    private var toast: String? = null
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        Log.d(TAG, "onActivityCreated: ")
+
+        displayToast()
+    }
+
+    fun scanFromFragment() {
+        Log.d(TAG, "scanFromFragment: ")
+        IntentIntegrator.forSupportFragment(this).initiateScan()
+    }
+
+    private fun displayToast() {
+        Log.d(TAG, "displayToast: ")
+        if (activity != null && toast != null) {
+            Toast.makeText(activity, toast, Toast.LENGTH_LONG).show()
+            toast = null
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d(TAG, "onActivityResult: ")
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (result != null) {
+            if (result.contents == null) {
+                toast = "Cancelled"
+                displayToast()
+            } else {
+                binding.recipientAddressEv.setText(result.contents)
+            }
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +112,11 @@ class SendEthFragment : Fragment() {
 
 
         setupWidgets(balanceString, balanceWei, password, keystorePath, myAddress)
+
+        binding.scanIv.setOnClickListener {
+            scanFromFragment()
+        }
+
 
         return binding.root
     }

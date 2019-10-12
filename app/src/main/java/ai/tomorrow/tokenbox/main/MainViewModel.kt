@@ -21,15 +21,15 @@ import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.exceptions.ClientConnectionException
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
-import java.lang.Exception
-import java.lang.Runnable
 import java.math.BigDecimal
 
 const val UPDATE_FREQUENCY = 10000L
 const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
-class MainViewModel(private val application: Application,
-                    val database: HistoryDao) : ViewModel() {
+class MainViewModel(
+    private val application: Application,
+    val database: HistoryDao
+) : ViewModel() {
 
     private val TAG = "MainViewModel"
 
@@ -51,7 +51,7 @@ class MainViewModel(private val application: Application,
     val balance: LiveData<String>
         get() = _balance
 
-    val databaseHistories : LiveData<List<DatabaseHistory>> = database.getAllHistory()
+    val databaseHistories: LiveData<List<DatabaseHistory>> = database.getAllHistory()
 //    val databaseHistories: LiveData<List<DatabaseHistory>>
 //        get() = _histories
 
@@ -61,7 +61,7 @@ class MainViewModel(private val application: Application,
     private lateinit var backgroundThread: HandlerThread
     private val backgroundThreadRunner = object : Runnable {
         override fun run() {
-            Log.d(TAG, "backgroundThreadRunner, thread name: ${Thread.currentThread().name}" )
+            Log.d(TAG, "backgroundThreadRunner, thread name: ${Thread.currentThread().name}")
             getBalance()
             refreshHistoryDatabaseFromNetwork()
             backgroundHandler.postDelayed(this, UPDATE_FREQUENCY)
@@ -72,7 +72,6 @@ class MainViewModel(private val application: Application,
     init {
         Log.d(TAG, "init")
         getCurrentWallet()
-
 
 
 //
@@ -89,12 +88,15 @@ class MainViewModel(private val application: Application,
 
     val mutex = Mutex()
 
-    fun changeHistoryDataset(){
-        Log.d(TAG, "XXX changeHistoryDataset: remove all data in the dataset and get new data for new address")
+    fun changeHistoryDataset() {
+        Log.d(
+            TAG,
+            "XXX changeHistoryDataset: remove all data in the dataset and get new data for new address"
+        )
         val address = _myAddress.value
         if (address.isNullOrEmpty()) return
         uiScope.launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 mutex.withLock {
                     database.clear()
                     updateDataset(address)
@@ -104,13 +106,13 @@ class MainViewModel(private val application: Application,
     }
 
 
-    fun refreshHistoryDatabaseFromNetwork(){
+    fun refreshHistoryDatabaseFromNetwork() {
         Log.d(TAG, "refreshHistoryDatabaseFromNetwork")
         val address = _myAddress.value
         if (address.isNullOrEmpty()) return
 
         uiScope.launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 updateDataset(address)
             }
         }
@@ -151,12 +153,12 @@ class MainViewModel(private val application: Application,
         Log.d(TAG, "_myAddress.value = ${_myAddress.value}")
     }
 
-    fun startPollingBalance(){
+    fun startPollingBalance() {
         Log.d(TAG, "startPollingBalance: make request every 30 second")
         backgroundHandler.post(backgroundThreadRunner)
     }
 
-    fun stopPollingBalance(){
+    fun stopPollingBalance() {
         Log.d(TAG, "stopPollingBalance: stop")
         backgroundHandler.removeCallbacks(backgroundThreadRunner)
     }
@@ -179,7 +181,7 @@ class MainViewModel(private val application: Application,
             uiHandler.post {
                 _balance.value = "$ether ETH"
             }
-        } catch (e: ClientConnectionException){
+        } catch (e: ClientConnectionException) {
             Log.d(TAG, e.message)
         }
     }
