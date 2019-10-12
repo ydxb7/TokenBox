@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.web3j.utils.Convert
+import java.math.BigDecimal
 
 class HistoryRecyclerViewAdapter :
     ListAdapter<DatabaseHistory, HistoryRecyclerViewAdapter.ViewHolder>(HistoryDiffCallback()) {
@@ -40,15 +42,33 @@ class HistoryRecyclerViewAdapter :
             Log.d("HistoryAdapter", "bind")
 
             binding.apply {
-                isFrom = (history.myAddress == history.to)
+                val isFrom = (history.myAddress == history.to)
                 Log.d("HistoryAdapterAdapter", "isFrom = $isFrom")
-                if (isFrom) {
+                val ether = Convert.fromWei(BigDecimal(history.value), Convert.Unit.ETHER).toFloat()
+
+                if (isFrom){
                     addressTv.text = history.from
-                    valueTv.text = "+ ${history.value}"
-                } else {
+                    fromToTv.text = "From: "
+                } else{
                     addressTv.text = history.to
-                    valueTv.text = "- ${history.value}"
+                    fromToTv.text = "To: "
                 }
+
+
+                if (history.isError == 1) {
+                    valueTv.text = "Error"
+                } else {
+                    if (isFrom) {
+                        valueTv.text = "+ ${ether} ETH"
+//                        valueTv.textColors
+                    } else {
+                        valueTv.text = "- ${ether} ETH"
+                    }
+                }
+
+
+
+
 
                 executePendingBindings()
             }

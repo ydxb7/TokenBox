@@ -5,11 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <variable
-            name="isFrom"
-            type="boolean" />
-
         <variable
             name="history"
             type="ai.tomorrow.tokenbox.data.DatabaseHistory" />
@@ -28,35 +23,25 @@
             tools:text="10/9/2019 at 19:31" />
 
         <TextView
-            android:id="@+id/fromTv"
+            android:id="@+id/fromToTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/timeTv"
             android:text="From: "
             android:textColor="@color/black"
-            android:textSize="24sp"
-            app:isGone="@{!isFrom}" />
+            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/toTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/timeTv"
-            android:text="To: "
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            app:isGone="@{isFrom}" />
 
         <TextView
             android:id="@+id/addressTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/timeTv"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="4dp"
             android:textColor="@color/black"
-            android:textSize="14sp"
-            tools:text="From: 0x3bAF284A...fFD" />
+            android:textSize="12sp"
+            tools:text="0x3bAF284A...fFD" />
 
         <TextView
             android:id="@+id/valueTv"

@@ -97,9 +97,7 @@ class MainViewModel(private val application: Application,
                     address,
                     0,
                     99999999,
-                    1,
-                    10,
-                    "asc",
+                    "desc",
                     API_KEY_TOKEN
                 )
 

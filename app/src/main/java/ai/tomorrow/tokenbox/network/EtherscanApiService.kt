@@ -46,8 +46,6 @@ interface EtherscanApiService {
                    @Query("address") address: String,
                    @Query("startblock") startblock: Long,
                    @Query("endblock") endblock: Long,
-                   @Query("page") page: Int,
-                   @Query("offset") offset: Int,
                    @Query("sort") sort: String,
                    @Query("apikey") apikey: String
     ):
