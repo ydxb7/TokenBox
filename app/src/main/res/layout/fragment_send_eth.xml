@@ -48,15 +48,6 @@
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
-                        <ImageView
-                            android:id="@+id/scanIv"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:padding="5dp"
-                            android:src="@drawable/scan_icon" />
-
 
                     </RelativeLayout>
 
@@ -82,12 +73,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/recipientAddressTv"
-                android:layout_margin="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toLeftOf="@id/scanIv"
                 android:background="@drawable/grey_border_round_rectangle"
+                android:hint="Recipient Address"
+                android:maxLines="2"
+                android:minLines="2"
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 tools:text="0x3bAF284A4b65B4B0f1DF372e10E442ea837d6fFD" />
+
+            <ImageView
+                android:id="@+id/scanIv"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/recipientAddressTv"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="24dp"
+                android:padding="5dp"
+                android:src="@drawable/scan_icon" />
 
             <TextView
                 android:id="@+id/assetTv"
