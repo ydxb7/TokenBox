@@ -25,7 +25,7 @@ class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
 
-    private var myAddress: String = ""
+    private var currentAddress: String = ""
 
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: HistoryRecyclerViewAdapter
@@ -72,14 +72,17 @@ class MainFragment : Fragment() {
 
         })
 
-        viewModel.currentAddress.observe(this, Observer {
-            if (it != null) {
-                viewModel.startPollingData()
+        viewModel.currentAddress.observe(this, Observer { newAddress ->
+            if (!newAddress.isNullOrEmpty() && newAddress != currentAddress) {
+                Log.d(TAG, "XXX YYY address changed.")
                 viewModel.resetDataset()
+            } else if (!newAddress.isNullOrEmpty()) {
+                Log.d(TAG, "XXX YYY address not change.")
+                viewModel.startPollingData()
             } else {
+                Log.d(TAG, "XXX YYY address is empty.")
                 viewModel.stopPollingData()
             }
-
         })
     }
 
