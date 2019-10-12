@@ -275,7 +275,7 @@ class SendEthFragment : Fragment() {
 
     fun scanFromFragment() {
         Log.d(TAG, "scanFromFragment: ")
-        IntentIntegrator.forSupportFragment(this).initiateScan()
+        IntentIntegrator.forSupportFragment(this).setOrientationLocked(false).initiateScan()
     }
 
     private fun displayToast() {
