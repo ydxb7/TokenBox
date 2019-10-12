@@ -26,6 +26,7 @@ import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
+import java.math.BigInteger
 
 
 const val GAS_LIMIT_MIN = 11000
@@ -41,6 +42,7 @@ class SendEthFragment : Fragment() {
     var gasCount = 21000
     private val uiScope = CoroutineScope(Dispatchers.Main)
     private var uiHandler = Handler()
+    private lateinit var gasPriceWei: BigInteger
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +62,29 @@ class SendEthFragment : Fragment() {
         val balanceWei = Convert.toWei(balance, Convert.Unit.ETHER).toBigInteger()
 
 
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+                val gasprice = web3j.ethGasPrice().send().gasPrice
+                uiHandler.post {
+                    gasPriceWei = gasprice
+                    binding.gasPriceTV.text = gasPriceWei.toString()
+                }
+            }
+        }
 
+
+        setupWidgets(balanceString, balanceWei, password, keystorePath, myAddress)
+
+        return binding.root
+    }
+
+    private fun setupWidgets(
+        balanceString: String,
+        balanceWei: BigInteger?,
+        password: String,
+        keystorePath: String,
+        myAddress: String
+    ) {
         binding.balanceTv.text = balanceString
 
         binding.seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -79,7 +103,7 @@ class SendEthFragment : Fragment() {
             ) {
                 Log.d(TAG, "onProgressChanged")
                 gasCount = 11000 + progress
-                binding.gasTV.text = gasCount.toString()
+                binding.gasLimitTV.text = gasCount.toString()
             }
         })
 
@@ -90,8 +114,6 @@ class SendEthFragment : Fragment() {
 
             uiScope.launch {
                 withContext(Dispatchers.IO) {
-                    Log.d(TAG, "sendBtn clicked 222")
-                    val gasPriceWei = web3j.ethGasPrice().send().gasPrice
                     val toAddress = binding.recipientAddressEv.text.toString()
 
                     val amount = binding.amountEv.text.toString().toBigDecimal()
@@ -100,41 +122,21 @@ class SendEthFragment : Fragment() {
                     val gasLimitBigInteger = gasCount.toBigInteger()
                     val costWei = amountWei.add(gasPriceWei.multiply(gasLimitBigInteger))
 
-                    Log.d(TAG, "sendBtn clicked 333")
                     if (costWei > balanceWei) {
-                        Log.d(TAG, "sendBtn clicked 444")
-                        Log.d(TAG, "sendBtn costWei = $costWei, costWei = $costWei")
-                        Log.d(TAG, "sendBtn costWei = $costWei, balanceWei = $balanceWei")
-                        Log.d(TAG, "sendBtn amount = $amount, amountWei = $amountWei")
-                        Log.d(TAG, "sendBtn costWei = $costWei, gasLimitBigInteger = $gasLimitBigInteger")
-                        Log.d(TAG, "sendBtn costWei = $costWei, gasPriceWei = $gasPriceWei")
+                        Log.d(TAG, "costWei > balanceWei")
                         uiHandler.post {
-                            Log.d(TAG, "sendBtn clicked 4441111111")
-                            Toast.makeText(context, "Insufficient balance", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Insufficient balance", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     } else {
-                        Log.d(TAG, "sendBtn clicked 555")
-                        val credentials = WalletUtils.loadCredentials(password, keystorePath)
-                        val ethGetTransactionCount = web3j.ethGetTransactionCount(
-                            myAddress, DefaultBlockParameterName.LATEST
-                        ).send()
-                        val nonce = ethGetTransactionCount.transactionCount
-
-
-                        val rawTransaction = RawTransaction.createEtherTransaction(
-                            nonce,
-                            gasPriceWei,
+                        val transactionHash = sendTransaction(
+                            password,
+                            keystorePath,
+                            myAddress,
                             gasLimitBigInteger,
                             toAddress,
                             amountWei
                         )
-                        val signedMessage =
-                            TransactionEncoder.signMessage(rawTransaction, credentials)
-
-                        val hexValue = Numeric.toHexString(signedMessage)
-                        val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send()
-
-                        val transactionHash = ethSendTransaction.transactionHash
 
                         uiHandler.post {
                             if (transactionHash != null) {
@@ -152,29 +154,46 @@ class SendEthFragment : Fragment() {
                             }
                         }
                     }
-
                 }
 
-
             }
-
-//            }
-
-
         }
-
-
-
-
-
-
-
 
         binding.backBtn.setOnClickListener {
             it.findNavController().navigateUp()
         }
+    }
 
-        return binding.root
+    private fun sendTransaction(
+        password: String,
+        keystorePath: String,
+        myAddress: String,
+        gasLimitBigInteger: BigInteger,
+        toAddress: String,
+        amountWei: BigInteger?
+    ): String? {
+        val credentials = WalletUtils.loadCredentials(password, keystorePath)
+        val ethGetTransactionCount = web3j.ethGetTransactionCount(
+            myAddress, DefaultBlockParameterName.LATEST
+        ).send()
+        val nonce = ethGetTransactionCount.transactionCount
+
+
+        val rawTransaction = RawTransaction.createEtherTransaction(
+            nonce,
+            gasPriceWei,
+            gasLimitBigInteger,
+            toAddress,
+            amountWei
+        )
+        val signedMessage =
+            TransactionEncoder.signMessage(rawTransaction, credentials)
+
+        val hexValue = Numeric.toHexString(signedMessage)
+        val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send()
+
+        val transactionHash = ethSendTransaction.transactionHash
+        return transactionHash
     }
 
 

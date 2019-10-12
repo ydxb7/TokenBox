@@ -18,13 +18,14 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.exceptions.ClientConnectionException
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
 import java.lang.Exception
 import java.lang.Runnable
 import java.math.BigDecimal
 
-const val UPDATE_FREQUENCY = 5000L
+const val UPDATE_FREQUENCY = 10000L
 const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
 class MainViewModel(private val application: Application,
@@ -166,16 +167,20 @@ class MainViewModel(private val application: Application,
 
         val address = _myAddress.value
         // send asynchronous requests to get balance
-        val ethGetBalance = web3j
-            .ethGetBalance(address, DefaultBlockParameterName.LATEST)
-            .sendAsync()
-            .get()
+        try {
+            val ethGetBalance = web3j
+                .ethGetBalance(address, DefaultBlockParameterName.LATEST)
+                .sendAsync()
+                .get()
 
-        val wei = ethGetBalance.balance
-        val ether = Convert.fromWei(BigDecimal(wei), Convert.Unit.ETHER).toFloat()
+            val wei = ethGetBalance.balance
+            val ether = Convert.fromWei(BigDecimal(wei), Convert.Unit.ETHER).toFloat()
 
-        uiHandler.post {
-            _balance.value = "$ether ETH"
+            uiHandler.post {
+                _balance.value = "$ether ETH"
+            }
+        } catch (e: ClientConnectionException){
+            Log.d(TAG, e.message)
         }
     }
 
