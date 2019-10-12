@@ -21,8 +21,10 @@ import org.consenlabs.tokencore.wallet.model.Network
 import java.io.File
 import android.content.SharedPreferences
 import android.R.attr.password
+import android.content.Intent
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.google.zxing.integration.android.IntentIntegrator
 import org.consenlabs.tokencore.wallet.model.TokenException
 
 
@@ -35,6 +37,41 @@ class ImportWalletFragment : Fragment(), KeystoreStorage {
     private lateinit var identity: Identity
     private var job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
+
+    private var toast: String? = null
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        Log.d(TAG, "onActivityCreated: ")
+
+        displayToast()
+    }
+
+    fun scanFromFragment() {
+        Log.d(TAG, "scanFromFragment: ")
+        IntentIntegrator.forSupportFragment(this).initiateScan()
+    }
+
+    private fun displayToast() {
+        Log.d(TAG, "displayToast: ")
+        if (activity != null && toast != null) {
+            Toast.makeText(activity, toast, Toast.LENGTH_LONG).show()
+            toast = null
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d(TAG, "onActivityResult: ")
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (result != null) {
+            if (result.contents == null) {
+                toast = "Cancelled"
+                displayToast()
+            } else {
+                binding.mnemonicEv.setText(result.contents)
+            }
+        }
+    }
 
 
     override fun onCreateView(
@@ -55,7 +92,9 @@ class ImportWalletFragment : Fragment(), KeystoreStorage {
             }
         }
 
-
+        binding.scanRtn.setOnClickListener {
+            scanFromFragment()
+        }
 
         binding.backBtn.setOnClickListener {
             it.findNavController().navigateUp()
