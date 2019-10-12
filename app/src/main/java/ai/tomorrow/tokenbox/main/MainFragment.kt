@@ -83,11 +83,8 @@ class MainFragment : Fragment() {
 
         binding.sendBtn.setOnClickListener {
             Log.d(TAG, "sendBtn clicked")
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val keystorePath = sharedPreferences.getString(getString(R.string.wallet_keystore_path), "")?:""
             val direction = MainFragmentDirections.actionMainFragmentToSendEthFragment(
-                viewModel.balance.value?:"0 ETH",
-                keystorePath
+                viewModel.balance.value?:"0 ETH"
                 )
             it.findNavController().navigate(direction)
         }

@@ -21,9 +21,7 @@
         <argument
             android:name="balance"
             app:argType="string" />
-        <argument
-            android:name="keystorePath"
-            app:argType="string" />
+
     </fragment>
     <fragment
         android:id="@+id/importWalletFragment"

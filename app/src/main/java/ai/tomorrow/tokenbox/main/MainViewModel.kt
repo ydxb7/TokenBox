@@ -24,7 +24,7 @@ import java.lang.Exception
 import java.lang.Runnable
 import java.math.BigDecimal
 
-const val UPDATE_FREQUENCY = 30000L
+const val UPDATE_FREQUENCY = 5000L
 const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
 class MainViewModel(private val application: Application,
@@ -62,6 +62,7 @@ class MainViewModel(private val application: Application,
         override fun run() {
             Log.d(TAG, "backgroundThreadRunner, thread name: ${Thread.currentThread().name}" )
             getBalance()
+            refreshHistoryDatabaseFromNetwork()
             backgroundHandler.postDelayed(this, UPDATE_FREQUENCY)
         }
     }

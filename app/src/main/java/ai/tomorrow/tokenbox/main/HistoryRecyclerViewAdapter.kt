@@ -6,12 +6,15 @@ import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.web3j.utils.Convert
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
+
+enum class Direction {
+    IN, OUT, SELF
+}
+
 
 class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
     RecyclerView.Adapter<HistoryRecyclerViewAdapter.ViewHolder>() {
@@ -40,7 +43,7 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
         return myData.size
     }
 
-    fun setData(data: List<DatabaseHistory>){
+    fun setData(data: List<DatabaseHistory>) {
         myData = data
         notifyDataSetChanged()
     }
@@ -61,14 +64,25 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
 
                 Log.d("HistoryAdapterAdapter", "timestamp = ${history.timeStamp}")
                 Log.d("HistoryAdapterAdapter", "hash = ${history.hash}")
-                val timeString = SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(history.timeStamp * 1000)
+                val timeString =
+                    SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(history.timeStamp * 1000)
 
                 timeTv.text = timeString
 
-                if (isFrom){
+                var state: Direction
+
+
+
+                if (history.from == history.myAddress && history.to == history.myAddress) {
+                    state = Direction.SELF
+                    addressTv.text = history.myAddress
+                    fromToTv.text = "Self: "
+                } else if (history.myAddress == history.to) {
+                    state = Direction.IN
                     addressTv.text = history.from
                     fromToTv.text = "From: "
-                } else{
+                } else {
+                    state = Direction.OUT
                     addressTv.text = history.to
                     fromToTv.text = "To: "
                 }
@@ -78,14 +92,22 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                     valueTv.text = "Error"
                     valueTv.setTextColor(Color.RED)
                 } else {
-                    if (isFrom) {
-                        valueTv.text = "+ ${ether} ETH"
-                        valueTv.setTextColor(Color.GREEN)
-//                        valueTv.textColors
-                    } else {
-                        valueTv.text = "- ${ether} ETH"
-                        valueTv.setTextColor(Color.RED)
+                    when (state) {
+                        Direction.SELF -> {
+                            valueTv.text = "+ ${ether} ETH"
+                            valueTv.setTextColor(Color.GRAY)
+                        }
+                        Direction.OUT -> {
+                            valueTv.text = "- ${ether} ETH"
+                            valueTv.setTextColor(Color.RED)
+                        }
+                        Direction.IN -> {
+
+                            valueTv.text = "+ ${ether} ETH"
+                            valueTv.setTextColor(Color.GREEN)
+                        }
                     }
+
                 }
 
                 executePendingBindings()
