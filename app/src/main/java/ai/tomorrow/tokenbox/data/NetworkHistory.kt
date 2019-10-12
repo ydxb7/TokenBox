@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 data class ResultResponse(
     val status: Int,
     val message: String,
-    val result: List<History>
+    val result: List<NetworkHistory>
 )
 
-data class History(
+data class NetworkHistory(
     val blockNumber: Long,
     val timeStamp: Long,
     val hash: String,
@@ -48,29 +48,7 @@ data class DatabaseHistory constructor(
     val myAddress: String
 )
 
-fun List<DatabaseHistory>.asDomainModel(): List<History> {
-    return map {
-        History(
-            blockNumber = it.blockNumber,
-            timeStamp = it.timeStamp,
-            hash = it.hash,
-            nonce = it.nonce,
-            blockHash = it.blockHash,
-            transactionIndex = it.transactionIndex,
-            from = it.from,
-            to = it.to,
-            value = it.value,
-            gas = it.gas,
-            gasPrice = it.gasPrice,
-            isError = it.isError,
-            cumulativeGasUsed = it.cumulativeGasUsed,
-            gasUsed = it.gasUsed,
-            confirmations = it.confirmations
-        )
-    }
-}
-
-fun List<History>.asDatabaseModel(myAddress: String): Array<DatabaseHistory> {
+fun List<NetworkHistory>.asDatabaseModel(myAddress: String): Array<DatabaseHistory> {
     return map {
         DatabaseHistory(
             blockNumber = it.blockNumber,
@@ -88,6 +66,7 @@ fun List<History>.asDatabaseModel(myAddress: String): Array<DatabaseHistory> {
             cumulativeGasUsed = it.cumulativeGasUsed,
             gasUsed = it.gasUsed,
             confirmations = it.confirmations,
-            myAddress = myAddress)
+            myAddress = myAddress
+        )
     }.toTypedArray()
 }
