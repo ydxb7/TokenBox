@@ -1,70 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
-                name="isFrom"
-                type="boolean" />
+            name="isFrom"
+            type="boolean" />
+
         <variable
-                name="history"
-                type="ai.tomorrow.tokenbox.data.DatabaseHistory" />
+            name="history"
+            type="ai.tomorrow.tokenbox.data.DatabaseHistory" />
     </data>
 
     <RelativeLayout
-            android:layout_width="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/timeTv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:padding="8dp">
+            tools:text="10/9/2019 at 19:31" />
 
         <TextView
-                android:id="@+id/timeTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="10/9/2019 at 19:31" />
+            android:id="@+id/fromTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/timeTv"
+            android:text="From: "
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:isGone="@{!isFrom}" />
 
         <TextView
-                android:id="@+id/fromTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/timeTv"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                app:isGone="@{isFrom}"
-                tools:text="From: " />
+            android:id="@+id/toTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/timeTv"
+            android:text="To: "
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:isGone="@{isFrom}" />
 
         <TextView
-                android:id="@+id/toTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/timeTv"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                app:isGone="@{!isFrom}"
-                tools:text="To: " />
+            android:id="@+id/addressTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/timeTv"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="From: 0x3bAF284A...fFD" />
 
         <TextView
-                android:id="@+id/addressTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/timeTv"
-                android:textColor="@color/black"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="10dp"
-                android:textSize="14sp"
-                tools:text="From: 0x3bAF284A...fFD" />
-
-        <TextView
-                android:id="@+id/valueTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/green"
-                android:textSize="20sp"
-                tools:text="+2.1 ETH" />
+            android:id="@+id/valueTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            tools:text="+2.1 ETH" />
 
     </RelativeLayout>
 </layout>

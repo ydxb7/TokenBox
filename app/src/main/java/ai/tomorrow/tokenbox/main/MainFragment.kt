@@ -40,6 +40,18 @@ class MainFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
+
+
+        val adapter = HistoryRecyclerViewAdapter()
+        binding.historyRecyclerView.adapter = adapter
+
+
+        viewModel.databaseHistories.observe(this, Observer {
+            Log.d(TAG, "histories in the dataset = $it")
+            adapter.submitList(it)
+        })
+
+
         viewModel.myAddress.observe(this, Observer {
             if (it != null) {
                 binding.hasWallet = true
@@ -51,14 +63,6 @@ class MainFragment : Fragment() {
             }
 
         })
-
-
-        viewModel.databaseHistories.observe(this, Observer {
-            Log.d(TAG, "histories in the dataset = $it")
-        })
-
-
-
 
 
         binding.addWalletBtn.setOnClickListener {
