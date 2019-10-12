@@ -36,18 +36,19 @@ class MainViewModel(
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
 
+    // coroutine
     val mutex = Mutex()
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
+    // LiveData
+    private val _currentAddress = MutableLiveData<String>()
+    val currentAddress: LiveData<String>
+        get() = _currentAddress
 
-    private val _myAddress = MutableLiveData<String>()
-    val myAddress: LiveData<String>
-        get() = _myAddress
-
-    private val _myWalletName = MutableLiveData<String>()
-    val myWalletName: LiveData<String>
-        get() = _myWalletName
+    private val _currentWalletName = MutableLiveData<String>()
+    val currentWalletName: LiveData<String>
+        get() = _currentWalletName
 
     private val _balance = MutableLiveData<String>()
     val balance: LiveData<String>
@@ -55,8 +56,8 @@ class MainViewModel(
 
     val databaseHistories: LiveData<List<DatabaseHistory>> = database.getAllHistory()
 
-    val hasWallet = Transformations.map(myAddress) {
-        !myAddress.value.isNullOrBlank()
+    val hasWallet = Transformations.map(currentAddress) {
+        !currentAddress.value.isNullOrBlank()
     }
 
     // poll data
@@ -71,7 +72,6 @@ class MainViewModel(
             backgroundHandler.postDelayed(this, UPDATE_FREQUENCY)
         }
     }
-
 
     init {
         Log.d(TAG, "init")
@@ -92,7 +92,7 @@ class MainViewModel(
             TAG,
             "XXX resetDataset: remove all data in the dataset and get new data for new address"
         )
-        val address = _myAddress.value
+        val address = _currentAddress.value
         if (address.isNullOrEmpty()) return
         uiScope.launch {
             withContext(Dispatchers.IO) {
@@ -104,10 +104,9 @@ class MainViewModel(
         }
     }
 
-
     fun refreshHistoryDatabaseFromNetwork() {
         Log.d(TAG, "refreshHistoryDatabaseFromNetwork")
-        val address = _myAddress.value
+        val address = _currentAddress.value
         if (address.isNullOrEmpty()) return
 
         uiScope.launch {
@@ -142,14 +141,14 @@ class MainViewModel(
 
 
     fun getCurrentWallet() {
-        Log.d(TAG, "getCurrentWallet and update LiveData _myAddress")
+        Log.d(TAG, "getCurrentWallet and update LiveData _currentAddress")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-        _myAddress.value =
+        _currentAddress.value =
             sharedPreferences.getString(application.getString(R.string.wallet_address), "") ?: ""
-        _myWalletName.value =
+        _currentWalletName.value =
             sharedPreferences.getString(application.getString(R.string.wallet_name), "") ?: ""
 
-        Log.d(TAG, "_myAddress.value = ${_myAddress.value}")
+        Log.d(TAG, "_currentAddress.value = ${_currentAddress.value}")
     }
 
     fun startPollingData() {
@@ -166,7 +165,7 @@ class MainViewModel(
     private fun getBalance() {
         Log.d(TAG, "get balance, use web3j")
 
-        val address = myAddress.value
+        val address = currentAddress.value
 
         if (!address.isNullOrEmpty()) {
             // send asynchronous requests to get balance

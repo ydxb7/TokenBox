@@ -63,7 +63,7 @@ class MainFragment : Fragment() {
 
         })
 
-        viewModel.myAddress.observe(this, Observer {
+        viewModel.currentAddress.observe(this, Observer {
             if (it != null) {
                 viewModel.startPollingData()
                 viewModel.resetDataset()

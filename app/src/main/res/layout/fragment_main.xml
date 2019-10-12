@@ -41,7 +41,7 @@
                         <TextView
                             android:id="@+id/walletNameTv"
                             style="@style/header_text"
-                            android:text="@{viewModel.myWalletName}"
+                            android:text="@{viewModel.currentWalletName}"
                             tools:text="wallet name" />
 
                         <ImageView
