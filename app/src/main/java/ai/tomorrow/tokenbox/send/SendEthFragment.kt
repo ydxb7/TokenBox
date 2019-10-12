@@ -1,6 +1,9 @@
 package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.R
+import ai.tomorrow.tokenbox.data.DatabaseHistory
+import ai.tomorrow.tokenbox.data.HistoryDao
+import ai.tomorrow.tokenbox.data.HistoryDatabase
 import ai.tomorrow.tokenbox.databinding.FragmentSendEthBinding
 import android.content.Intent
 import android.os.Bundle
@@ -30,6 +33,8 @@ import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.sql.Timestamp
+import java.util.*
 
 
 const val GAS_LIMIT_MIN = 11000
@@ -53,6 +58,9 @@ class SendEthFragment : Fragment() {
     var gasCount = 21000
     private lateinit var gasPriceWei: BigInteger
 
+    //
+    private lateinit var database: HistoryDao
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,6 +68,9 @@ class SendEthFragment : Fragment() {
     ): View? {
         Log.d(TAG, "onCreateView")
         binding = FragmentSendEthBinding.inflate(inflater, container, false)
+
+        val application = requireNotNull(this.activity).application
+        database = HistoryDatabase.getInstance(application).historyDao
 
         // get balance from bundle
         val balanceString = SendEthFragmentArgs.fromBundle(arguments!!).balance
@@ -187,21 +198,34 @@ class SendEthFragment : Fragment() {
             amountWei
         )
 
-        // toast
-        return uiHandler.post {
-            if (transactionHash != null) {
-                Log.d(TAG, "You have successfully send a transaction!")
+        if (!transactionHash.isNullOrEmpty()){
+            Log.d(TAG, "You have successfully send a transaction!")
+            Log.d(TAG, "YYY insert pending history")
+            val currentTimestamp = Timestamp(Date().time).time
+
+            val pendingHistory = DatabaseHistory(
+                0L, currentTimestamp, transactionHash, 0L, "", 0, myAddress, toAddress,
+                amountWei.toString(), "", "", 2, 0L, 0L, 0L, myAddress
+            )
+            Log.d(TAG, "YYY insert pending history: $pendingHistory")
+            database.insert(pendingHistory)
+
+            uiHandler.post{
                 Toast.makeText(
                     context,
                     "You have successfully send a transaction!",
                     Toast.LENGTH_SHORT
                 ).show()
                 it.findNavController().navigateUp()
-            } else {
+            }
+            return true
+        } else{
+            uiHandler.post {
                 Log.d(TAG, "Transaction failed!")
                 Toast.makeText(context, "Transaction failed!", Toast.LENGTH_SHORT)
                     .show()
             }
+            return false
         }
     }
 

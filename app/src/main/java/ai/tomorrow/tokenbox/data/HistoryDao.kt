@@ -18,4 +18,6 @@ interface HistoryDao {
     @Query("DELETE FROM history_table")
     suspend fun clear()
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(history: DatabaseHistory)
 }
