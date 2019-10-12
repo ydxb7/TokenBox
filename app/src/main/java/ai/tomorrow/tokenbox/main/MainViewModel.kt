@@ -84,7 +84,7 @@ class MainViewModel(private val application: Application,
     }
 
     fun changeHistoryDataset(){
-        Log.d(TAG, "changeHistoryDataset: remove all data in the dataset and get new data for new address")
+        Log.d(TAG, "XXX changeHistoryDataset: remove all data in the dataset and get new data for new address")
         val address = _myAddress.value
         if (address.isNullOrEmpty()) return
         uiScope.launch {
@@ -105,9 +105,8 @@ class MainViewModel(private val application: Application,
                     var histories = getHistoryDeferred.await().result
                     database.insertAll(*histories.asDatabaseModel(address))
 
-
-                    Log.d(TAG, "databaseHistories.value size = ${databaseHistories.value?.size}")
-                    Log.d(TAG, "databaseHistories.value = $databaseHistories")
+                    Log.d(TAG, "XXX _myAddress.value = ${_myAddress.value}")
+                    Log.d(TAG, "XXX databaseHistories.value size = ${databaseHistories.value?.size}")
                 } catch (e: Exception){
                     Log.d(TAG, "Fail: ${e.message}")
                 }

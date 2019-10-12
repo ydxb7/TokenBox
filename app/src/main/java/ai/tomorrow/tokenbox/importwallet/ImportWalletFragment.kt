@@ -23,6 +23,7 @@ import android.content.SharedPreferences
 import android.R.attr.password
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import org.consenlabs.tokencore.wallet.model.TokenException
 
 
 class ImportWalletFragment : Fragment(), KeystoreStorage {
@@ -88,14 +89,20 @@ class ImportWalletFragment : Fragment(), KeystoreStorage {
         val passwordHint = binding.passwordHintEt.text.toString().trim()
         val nameInput = binding.walletNameEt.text.toString().trim()
 
-        identity = Identity.recoverIdentity(
-            mnemonicInput,
-            "identity1",
-            password,
-            passwordHint,
-            Network.ROPSTEN,
-            Metadata.NONE
-        )
+        try {
+            identity = Identity.recoverIdentity(
+                mnemonicInput,
+                "identity1",
+                password,
+                passwordHint,
+                Network.ROPSTEN,
+                Metadata.NONE
+            )
+        } catch (e: TokenException){
+            Toast.makeText(context, "mnemonic word invalid", Toast.LENGTH_SHORT)
+            return
+        }
+
         Log.d(TAG, "get identity")
 
         val tokenCoreWallet = identity.wallets[0]

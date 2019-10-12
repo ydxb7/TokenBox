@@ -48,11 +48,18 @@ class MainFragment : Fragment() {
 
         viewModel.databaseHistories.observe(this, Observer {
             Log.d(TAG, "histories in the dataset = $it")
-            adapter.submitList(it)
+            Log.d(TAG, "histories in the dataset.size = ${it.size}")
+
+            if (!it.isNullOrEmpty()){
+                Log.d(TAG, "XXX first  = ${it[0].value}")
+                Log.d(TAG, "XXX histories in the dataset.size = ${it.size}")
+                adapter.submitList(it)
+            }
+
         })
 
         viewModel.balance.observe(this, Observer {
-            Log.d(TAG, "the balance change, so get history again.")
+            Log.d(TAG, "XXX the balance change, so get history again.")
             // the balance change, so get history again.
             viewModel.refreshHistoryDatabaseFromNetwork()
         })

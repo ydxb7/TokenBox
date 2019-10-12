@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.web3j.utils.Convert
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 
 class HistoryRecyclerViewAdapter :
     ListAdapter<DatabaseHistory, HistoryRecyclerViewAdapter.ViewHolder>(HistoryDiffCallback()) {
 
-    public val TAG = "HistoryAdapterAdapter"
+    public val TAG = "HistoryAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Log.d(TAG, "onCreateViewHolder")
@@ -46,6 +47,13 @@ class HistoryRecyclerViewAdapter :
                 val isFrom = (history.myAddress == history.to)
                 Log.d("HistoryAdapterAdapter", "isFrom = $isFrom")
                 val ether = Convert.fromWei(BigDecimal(history.value), Convert.Unit.ETHER).toFloat()
+
+
+                Log.d("HistoryAdapterAdapter", "timestamp = ${history.timeStamp}")
+                Log.d("HistoryAdapterAdapter", "hash = ${history.hash}")
+                val timeString = SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(history.timeStamp)
+
+                timeTv.text = timeString
 
                 if (isFrom){
                     addressTv.text = history.from
