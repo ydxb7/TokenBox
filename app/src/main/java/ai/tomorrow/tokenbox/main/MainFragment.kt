@@ -65,10 +65,10 @@ class MainFragment : Fragment() {
 
         viewModel.myAddress.observe(this, Observer {
             if (it != null) {
-                viewModel.startPollingBalance()
-                viewModel.changeHistoryDataset()
+                viewModel.startPollingData()
+                viewModel.resetDataset()
             } else {
-                viewModel.stopPollingBalance()
+                viewModel.stopPollingData()
             }
 
         })
@@ -127,10 +127,7 @@ class MainFragment : Fragment() {
                     Log.d(TAG, e.message)
                 }
             }
-
         }
-
-
 
         return binding.root
     }
@@ -138,12 +135,14 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
+        // refresh wallet info in viewModel
         binding.viewModel?.getCurrentWallet()
     }
 
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause")
-        binding.viewModel?.stopPollingBalance()
+        // stop updating data
+        binding.viewModel?.stopPollingData()
     }
 }

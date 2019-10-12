@@ -19,8 +19,7 @@ enum class Direction {
 class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
     RecyclerView.Adapter<HistoryRecyclerViewAdapter.ViewHolder>() {
 
-
-    public val TAG = "HistoryAdapter"
+    private val TAG = "HistoryAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Log.d(TAG, "onCreateViewHolder")
@@ -48,10 +47,8 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
         notifyDataSetChanged()
     }
 
-    class ViewHolder(
-        private val binding: ListItemHistoryBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
+    class ViewHolder(private val binding: ListItemHistoryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(history: DatabaseHistory) {
             Log.d("HistoryAdapter", "bind")
@@ -61,18 +58,16 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                 Log.d("HistoryAdapterAdapter", "isFrom = $isFrom")
                 val ether = Convert.fromWei(BigDecimal(history.value), Convert.Unit.ETHER).toFloat()
 
-
                 Log.d("HistoryAdapterAdapter", "timestamp = ${history.timeStamp}")
                 Log.d("HistoryAdapterAdapter", "hash = ${history.hash}")
                 val timeString =
-                    SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(history.timeStamp * 1000)
+                    SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(history.timeStamp * 1000)
 
                 timeTv.text = timeString
 
                 var state: Direction
 
-
-
+                // setup widgets text and color
                 if (history.from == history.myAddress && history.to == history.myAddress) {
                     state = Direction.SELF
                     addressTv.text = history.myAddress
@@ -86,7 +81,6 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                     addressTv.text = history.to
                     fromToTv.text = "OUT"
                 }
-
 
                 if (history.isError == 1) {
                     valueTv.text = "ERROR"
@@ -111,9 +105,7 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                             colorBar.setBackgroundColor(Color.GREEN)
                         }
                     }
-
                 }
-
                 executePendingBindings()
             }
         }

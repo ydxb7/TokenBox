@@ -36,6 +36,7 @@ class MainViewModel(
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
 
+    val mutex = Mutex()
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -54,13 +55,11 @@ class MainViewModel(
 
     val databaseHistories: LiveData<List<DatabaseHistory>> = database.getAllHistory()
 
-    val hasWallet = Transformations.map(myAddress){
+    val hasWallet = Transformations.map(myAddress) {
         !myAddress.value.isNullOrBlank()
     }
-//    val databaseHistories: LiveData<List<DatabaseHistory>>
-//        get() = _histories
 
-
+    // poll data
     private var uiHandler = Handler()
     private lateinit var backgroundHandler: Handler
     private lateinit var backgroundThread: HandlerThread
@@ -83,12 +82,15 @@ class MainViewModel(
         backgroundHandler = Handler(backgroundThread.looper)
     }
 
-    val mutex = Mutex()
-
-    fun changeHistoryDataset() {
+    /**
+     * This method will be invoked when wallet changes.
+     * 1. remove all the data in the database
+     * 2. get new data for database
+     */
+    fun resetDataset() {
         Log.d(
             TAG,
-            "XXX changeHistoryDataset: remove all data in the dataset and get new data for new address"
+            "XXX resetDataset: remove all data in the dataset and get new data for new address"
         )
         val address = _myAddress.value
         if (address.isNullOrEmpty()) return
@@ -96,7 +98,7 @@ class MainViewModel(
             withContext(Dispatchers.IO) {
                 mutex.withLock {
                     database.clear()
-                    updateDataset(address)
+                    fetchDataFromNetAndUpdateDatabase(address)
                 }
             }
         }
@@ -110,12 +112,12 @@ class MainViewModel(
 
         uiScope.launch {
             withContext(Dispatchers.IO) {
-                updateDataset(address)
+                fetchDataFromNetAndUpdateDatabase(address)
             }
         }
     }
 
-    private suspend fun updateDataset(address: String): Int {
+    private suspend fun fetchDataFromNetAndUpdateDatabase(address: String): Int {
         var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
             "account",
             "txlist",
@@ -140,7 +142,7 @@ class MainViewModel(
 
 
     fun getCurrentWallet() {
-        Log.d(TAG, "getCurrentWallet")
+        Log.d(TAG, "getCurrentWallet and update LiveData _myAddress")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
         _myAddress.value =
             sharedPreferences.getString(application.getString(R.string.wallet_address), "") ?: ""
@@ -150,23 +152,23 @@ class MainViewModel(
         Log.d(TAG, "_myAddress.value = ${_myAddress.value}")
     }
 
-    fun startPollingBalance() {
-        Log.d(TAG, "startPollingBalance: make request every 30 second")
+    fun startPollingData() {
+        Log.d(TAG, "startPollingData: make request every 30 second")
         backgroundHandler.post(backgroundThreadRunner)
     }
 
-    fun stopPollingBalance() {
-        Log.d(TAG, "stopPollingBalance: stop")
+    fun stopPollingData() {
+        Log.d(TAG, "stopPollingData: stop")
         backgroundHandler.removeCallbacks(backgroundThreadRunner)
     }
 
 
     private fun getBalance() {
-        Log.d(TAG, "get balance")
+        Log.d(TAG, "get balance, use web3j")
 
-        val address = _myAddress.value
+        val address = myAddress.value
 
-        if (!address.isNullOrEmpty()){
+        if (!address.isNullOrEmpty()) {
             // send asynchronous requests to get balance
             try {
                 val ethGetBalance = web3j
@@ -186,10 +188,9 @@ class MainViewModel(
         }
     }
 
-
     override fun onCleared() {
         super.onCleared()
-        stopPollingBalance()
+        stopPollingData()
     }
 
 }
