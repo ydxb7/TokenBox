@@ -61,7 +61,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/app_bar_layout"
-                android:background="@color/transparent">
+                android:background="@color/transparent"
+                app:isGone="@{!viewModel.hasWallet}">
 
                 <TextView
                     android:id="@+id/text1"
@@ -84,7 +85,6 @@
                     android:text="@{viewModel.balance}"
                     android:textColor="@color/white"
                     android:textSize="42sp"
-                    app:isGone="@{!viewModel.hasWallet}"
                     tools:text="2.3101 ETH" />
 
                 <Button
@@ -92,8 +92,7 @@
                     style="@style/deposit_button"
                     android:layout_below="@id/balanceTv"
                     android:layout_marginStart="85dp"
-                    android:text="Deposit"
-                    app:isGone="@{!viewModel.hasWallet}" />
+                    android:text="Deposit" />
 
                 <Button
                     android:id="@+id/sendBtn"
@@ -101,8 +100,7 @@
                     android:layout_below="@id/balanceTv"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="85dp"
-                    android:text="Send"
-                    app:isGone="@{!viewModel.hasWallet}" />
+                    android:text="Send" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -128,7 +126,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/text2"
-                        app:isGone="@{!viewModel.hasWallet}"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 </RelativeLayout>
@@ -136,6 +133,33 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                app:isGone="@{viewModel.hasWallet}">
+
+                <TextView
+                    android:id="@+id/text3"
+                    style="@style/font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You have no wallet"
+                    android:textColor="@color/white"
+                    android:textSize="24dp" />
+
+                <Button
+                    android:id="@+id/addNewBtn"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text3"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/round_light_button"
+                    android:text="Add a wallet"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
     </FrameLayout>

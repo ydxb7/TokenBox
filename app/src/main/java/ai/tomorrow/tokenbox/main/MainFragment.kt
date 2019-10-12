@@ -81,6 +81,13 @@ class MainFragment : Fragment() {
             it.findNavController().navigate(direction)
         }
 
+        binding.addNewBtn.setOnClickListener {
+            Log.d(TAG, "addNewBtn clicked")
+            val direction =
+                MainFragmentDirections.actionMainFragmentToImportWalletFragment()
+            it.findNavController().navigate(direction)
+        }
+
         binding.sendBtn.setOnClickListener {
             Log.d(TAG, "sendBtn clicked")
             val direction = MainFragmentDirections.actionMainFragmentToSendEthFragment(
