@@ -14,6 +14,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
@@ -83,32 +85,17 @@ class MainViewModel(private val application: Application,
         backgroundHandler = Handler(backgroundThread.looper)
     }
 
+    val mutex = Mutex()
+
     fun changeHistoryDataset(){
         Log.d(TAG, "XXX changeHistoryDataset: remove all data in the dataset and get new data for new address")
         val address = _myAddress.value
         if (address.isNullOrEmpty()) return
         uiScope.launch {
             withContext(Dispatchers.IO){
-
-                database.clear()
-                var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
-                    "account",
-                    "txlist",
-                    address,
-                    0,
-                    99999999,
-                    "desc",
-                    API_KEY_TOKEN
-                )
-
-                try {
-                    var histories = getHistoryDeferred.await().result
-                    database.insertAll(*histories.asDatabaseModel(address))
-
-                    Log.d(TAG, "XXX _myAddress.value = ${_myAddress.value}")
-                    Log.d(TAG, "XXX databaseHistories.value size = ${databaseHistories.value?.size}")
-                } catch (e: Exception){
-                    Log.d(TAG, "Fail: ${e.message}")
+                mutex.withLock {
+                    database.clear()
+                    updateDataset(address)
                 }
             }
         }
@@ -122,31 +109,33 @@ class MainViewModel(private val application: Application,
 
         uiScope.launch {
             withContext(Dispatchers.IO){
-                var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
-                    "account",
-                    "txlist",
-                    address,
-                    0,
-                    99999999,
-                    "desc",
-                    API_KEY_TOKEN
-                )
-
-                try {
-                    var histories = getHistoryDeferred.await().result
-                    database.insertAll(*histories.asDatabaseModel(address))
-
-
-                    Log.d(TAG, "databaseHistories.value size = ${databaseHistories.value?.size}")
-                    Log.d(TAG, "databaseHistories.value = $databaseHistories")
-                } catch (e: Exception){
-                    Log.d(TAG, "Fail: ${e.message}")
-                }
+                updateDataset(address)
             }
         }
     }
 
+    private suspend fun updateDataset(address: String): Int {
+        var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
+            "account",
+            "txlist",
+            address,
+            0,
+            99999999,
+            "desc",
+            API_KEY_TOKEN
+        )
 
+        return try {
+            var histories = getHistoryDeferred.await().result
+            database.insertAll(*histories.asDatabaseModel(address))
+
+
+            Log.d(TAG, "databaseHistories.value size = ${databaseHistories.value?.size}")
+            Log.d(TAG, "databaseHistories.value = $databaseHistories")
+        } catch (e: Exception) {
+            Log.d(TAG, "Fail: ${e.message}")
+        }
+    }
 
 
     fun getCurrentWallet() {

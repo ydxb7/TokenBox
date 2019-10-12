@@ -51,7 +51,7 @@ class HistoryRecyclerViewAdapter :
 
                 Log.d("HistoryAdapterAdapter", "timestamp = ${history.timeStamp}")
                 Log.d("HistoryAdapterAdapter", "hash = ${history.hash}")
-                val timeString = SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(history.timeStamp)
+                val timeString = SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(history.timeStamp * 1000)
 
                 timeTv.text = timeString
 
@@ -97,6 +97,6 @@ private class HistoryDiffCallback : DiffUtil.ItemCallback<DatabaseHistory>() {
         oldItem: DatabaseHistory,
         newItem: DatabaseHistory
     ): Boolean {
-        return oldItem == newItem
+        return oldItem.hash == newItem.hash
     }
 }

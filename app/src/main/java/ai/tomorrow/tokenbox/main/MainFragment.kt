@@ -58,11 +58,11 @@ class MainFragment : Fragment() {
 
         })
 
-        viewModel.balance.observe(this, Observer {
-            Log.d(TAG, "XXX the balance change, so get history again.")
-            // the balance change, so get history again.
-            viewModel.refreshHistoryDatabaseFromNetwork()
-        })
+//        viewModel.balance.observe(this, Observer {
+//            Log.d(TAG, "XXX the balance change, so get history again.")
+//            // the balance change, so get history again.
+//            viewModel.refreshHistoryDatabaseFromNetwork()
+//        })
 
 
         viewModel.myAddress.observe(this, Observer {
