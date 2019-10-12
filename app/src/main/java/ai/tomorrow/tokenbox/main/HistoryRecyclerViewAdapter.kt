@@ -95,7 +95,7 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                 } else {
                     when (state) {
                         Direction.SELF -> {
-                            valueTv.text = "+ ${ether} ETH"
+                            valueTv.text = "  ${ether} ETH"
                             valueTv.setTextColor(Color.GRAY)
                             colorBar.setBackgroundColor(Color.GRAY)
                         }
