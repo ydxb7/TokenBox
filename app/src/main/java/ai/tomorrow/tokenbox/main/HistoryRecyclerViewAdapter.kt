@@ -13,8 +13,9 @@ import org.web3j.utils.Convert
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 
-class HistoryRecyclerViewAdapter :
-    ListAdapter<DatabaseHistory, HistoryRecyclerViewAdapter.ViewHolder>(HistoryDiffCallback()) {
+class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
+    RecyclerView.Adapter<HistoryRecyclerViewAdapter.ViewHolder>() {
+
 
     public val TAG = "HistoryAdapter"
 
@@ -31,8 +32,17 @@ class HistoryRecyclerViewAdapter :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d(TAG, "onBindViewHolder")
-        val history = getItem(position)
+        val history = myData[position]
         (holder as ViewHolder).bind(history)
+    }
+
+    override fun getItemCount(): Int {
+        return myData.size
+    }
+
+    fun setData(data: List<DatabaseHistory>){
+        myData = data
+        notifyDataSetChanged()
     }
 
     class ViewHolder(
@@ -81,22 +91,5 @@ class HistoryRecyclerViewAdapter :
                 executePendingBindings()
             }
         }
-    }
-}
-
-private class HistoryDiffCallback : DiffUtil.ItemCallback<DatabaseHistory>() {
-
-    override fun areItemsTheSame(
-        oldItem: DatabaseHistory,
-        newItem: DatabaseHistory
-    ): Boolean {
-        return oldItem.hash == newItem.hash
-    }
-
-    override fun areContentsTheSame(
-        oldItem: DatabaseHistory,
-        newItem: DatabaseHistory
-    ): Boolean {
-        return oldItem.hash == newItem.hash
     }
 }

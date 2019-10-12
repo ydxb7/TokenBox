@@ -1,5 +1,6 @@
 package ai.tomorrow.tokenbox.main
 
+import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.HistoryDatabase
 import ai.tomorrow.tokenbox.data.asDatabaseModel
 import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
@@ -42,7 +43,7 @@ class MainFragment : Fragment() {
 
 
 
-        val adapter = HistoryRecyclerViewAdapter()
+        val adapter = HistoryRecyclerViewAdapter(ArrayList())
         binding.historyRecyclerView.adapter = adapter
 
 
@@ -53,7 +54,7 @@ class MainFragment : Fragment() {
             if (!it.isNullOrEmpty()){
                 Log.d(TAG, "XXX first  = ${it[0].value}")
                 Log.d(TAG, "XXX histories in the dataset.size = ${it.size}")
-                adapter.submitList(it)
+                adapter.setData(it)
             }
 
         })
