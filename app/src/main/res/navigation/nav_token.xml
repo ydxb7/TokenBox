@@ -13,9 +13,6 @@
         <action
             android:id="@+id/action_mainFragment_to_importWalletFragment"
             app:destination="@id/importWalletFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_qrcodeDialogFragment"
-            app:destination="@id/qrcodeDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/sendEthFragment"
@@ -30,12 +27,4 @@
         android:id="@+id/importWalletFragment"
         android:name="ai.tomorrow.tokenjar.ImportWalletFragment"
         android:label="ImportWalletFragment" />
-    <fragment
-        android:id="@+id/qrcodeDialogFragment"
-        android:name="ai.tomorrow.tokenbox.QrcodeDialogFragment"
-        android:label="QrcodeDialogFragment" >
-        <argument
-            android:name="qrcode"
-            app:argType="android.graphics.Bitmap" />
-    </fragment>
 </navigation>

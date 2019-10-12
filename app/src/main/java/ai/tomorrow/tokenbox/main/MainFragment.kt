@@ -1,5 +1,6 @@
 package ai.tomorrow.tokenbox.main
 
+import ai.tomorrow.tokenbox.QrcodeDialogFragment
 import ai.tomorrow.tokenbox.data.HistoryDatabase
 import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
 import android.os.Bundle
@@ -107,9 +108,15 @@ class MainFragment : Fragment() {
                         multiFormatWriter.encode(myAddress, BarcodeFormat.QR_CODE, 200, 200)
                     val barcodeEncoder = BarcodeEncoder()
                     val bitmap = barcodeEncoder.createBitmap(bitMatrix)
-                    val direction =
-                        MainFragmentDirections.actionMainFragmentToQrcodeDialogFragment(bitmap)
-                    it.findNavController().navigate(direction)
+                    val dialogFragment = QrcodeDialogFragment()
+
+                    val bundle = Bundle()
+                    bundle.putParcelable("qrcode", bitmap)
+
+                    dialogFragment.arguments = bundle
+
+                    dialogFragment.show(fragmentManager!!, QrcodeDialogFragment::class.simpleName)
+
 
                 } catch (e: WriterException) {
                     Log.d(TAG, e.message)
