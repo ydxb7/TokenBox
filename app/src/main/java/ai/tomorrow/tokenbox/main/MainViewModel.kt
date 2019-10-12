@@ -11,6 +11,7 @@ import android.os.HandlerThread
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
@@ -52,6 +53,10 @@ class MainViewModel(
         get() = _balance
 
     val databaseHistories: LiveData<List<DatabaseHistory>> = database.getAllHistory()
+
+    val hasWallet = Transformations.map(myAddress){
+        !myAddress.value.isNullOrBlank()
+    }
 //    val databaseHistories: LiveData<List<DatabaseHistory>>
 //        get() = _histories
 
@@ -72,14 +77,6 @@ class MainViewModel(
     init {
         Log.d(TAG, "init")
         getCurrentWallet()
-
-
-//
-//        uiScope.launch {
-//            withContext(Dispatchers.IO){
-//
-//            }
-//        }
 
         backgroundThread = HandlerThread("backgroundHandler")
         backgroundThread.start()
@@ -168,21 +165,24 @@ class MainViewModel(
         Log.d(TAG, "get balance")
 
         val address = _myAddress.value
-        // send asynchronous requests to get balance
-        try {
-            val ethGetBalance = web3j
-                .ethGetBalance(address, DefaultBlockParameterName.LATEST)
-                .sendAsync()
-                .get()
 
-            val wei = ethGetBalance.balance
-            val ether = Convert.fromWei(BigDecimal(wei), Convert.Unit.ETHER).toFloat()
+        if (!address.isNullOrEmpty()){
+            // send asynchronous requests to get balance
+            try {
+                val ethGetBalance = web3j
+                    .ethGetBalance(address, DefaultBlockParameterName.LATEST)
+                    .sendAsync()
+                    .get()
 
-            uiHandler.post {
-                _balance.value = "$ether ETH"
+                val wei = ethGetBalance.balance
+                val ether = Convert.fromWei(BigDecimal(wei), Convert.Unit.ETHER).toFloat()
+
+                uiHandler.post {
+                    _balance.value = "$ether ETH"
+                }
+            } catch (e: ClientConnectionException) {
+                Log.d(TAG, e.message)
             }
-        } catch (e: ClientConnectionException) {
-            Log.d(TAG, e.message)
         }
     }
 

@@ -41,6 +41,9 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/black"
             android:textSize="12sp"
+            android:ellipsize="end"
+            android:maxEms="10"
+            android:maxLines="1"
             tools:text="0x3bAF284A...fFD" />
 
         <TextView

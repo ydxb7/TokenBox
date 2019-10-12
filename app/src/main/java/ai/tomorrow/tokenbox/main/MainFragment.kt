@@ -65,11 +65,9 @@ class MainFragment : Fragment() {
 
         viewModel.myAddress.observe(this, Observer {
             if (it != null) {
-                binding.hasWallet = true
                 viewModel.startPollingBalance()
                 viewModel.changeHistoryDataset()
             } else {
-                binding.hasWallet = false
                 viewModel.stopPollingBalance()
             }
 
