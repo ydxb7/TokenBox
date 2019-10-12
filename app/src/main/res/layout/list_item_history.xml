@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="history"
             type="ai.tomorrow.tokenbox.data.DatabaseHistory" />
@@ -13,41 +13,65 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="8dp">
+        android:background="@color/darkBackground2">
 
-        <TextView
-            android:id="@+id/timeTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="10/9/2019 at 19:31" />
-
-        <TextView
-            android:id="@+id/fromToTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/timeTv"
-            android:text="From: "
-            android:textColor="@color/black"
-            android:textSize="16sp" />
-
+        <View
+            android:id="@+id/colorBar"
+            android:layout_width="6dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/red" />
 
         <TextView
             android:id="@+id/addressTv"
+            style="@style/font"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/timeTv"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:textColor="@color/black"
-            android:textSize="12sp"
+            android:layout_toRightOf="@id/colorBar"
             android:ellipsize="end"
-            android:maxEms="10"
+            android:maxEms="6"
             android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             tools:text="0x3bAF284A...fFD" />
 
         <TextView
+            android:id="@+id/timeTv"
+            style="@style/font"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/addressTv"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_toRightOf="@id/colorBar"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            tools:text="10/9/2019 at 19:31" />
+
+
+        <TextView
+            android:id="@+id/fromToTv"
+            style="@style/font"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="180dp"
+            android:text="OUT "
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/colorBar"
+            android:layout_marginTop="8dp"
+            android:background="@color/darkBackground1" />
+
+        <TextView
             android:id="@+id/valueTv"
+            style="@style/font"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -55,6 +79,7 @@
             android:textColor="@color/green"
             android:textSize="20sp"
             tools:text="+2.1 ETH" />
+
 
     </RelativeLayout>
 </layout>

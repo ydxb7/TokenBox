@@ -6,13 +6,10 @@
 
 
     <data>
+
         <variable
             name="viewModel"
             type="ai.tomorrow.tokenbox.main.MainViewModel" />
-
-        <!--        <variable-->
-        <!--            name="viewModel"-->
-        <!--            type="ai.tomorrow.tokenjar.defaultwallet.DefaultWalletViewModel" />-->
     </data>
 
 
@@ -22,52 +19,36 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/darkBackground1">
 
             <!--            Toolbar            -->
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/app_bar_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/defaultWalletToolBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@color/darkGreyBar">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <ImageView
-                            android:id="@+id/addWalletBtn"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_alignParentEnd="true"
-                            android:src="@drawable/add_icon" />
-
                         <TextView
                             android:id="@+id/walletNameTv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
+                            style="@style/header_text"
                             android:text="@{viewModel.myWalletName}"
-                            android:textColor="@color/black"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
                             tools:text="wallet name" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/walletNameTv"
-                            android:layout_centerHorizontal="true"
-                            android:ellipsize="end"
-                            android:maxEms="10"
-                            android:maxLines="1"
-                            android:text="@{viewModel.myAddress}"
-                            tools:text="0xBb4451319f610871432A4B30F1c07f564f274Ad2" />
+                        <ImageView
+                            android:id="@+id/addWalletBtn"
+                            style="@style/bar_end_button"
+                            android:src="@drawable/add_icon" />
+
 
                     </RelativeLayout>
 
@@ -76,82 +57,85 @@
             </com.google.android.material.appbar.AppBarLayout>
 
             <!--                 body                  -->
-            <ImageView
-                android:id="@+id/logo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_below="@id/app_bar_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/eth_logo" />
-
-            <TextView
-                android:id="@+id/balanceTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/logo"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:text="@{viewModel.balance}"
-                android:textColor="@color/black"
-                android:textSize="30sp"
-                app:isGone="@{!viewModel.hasWallet}" />
-
-            <Button
-                android:id="@+id/depositBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/balanceTv"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/send_button"
-                android:text="deposit"
-                android:textColor="@color/secondaryDarkColor"
-                android:textSize="20dp"
-                app:isGone="@{!viewModel.hasWallet}" />
-
-            <Button
-                android:id="@+id/sendBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/balanceTv"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="80dp"
-                android:background="@drawable/send_button"
-                android:text="send"
-                android:textColor="@color/secondaryDarkColor"
-                android:textSize="20dp"
-                app:isGone="@{!viewModel.hasWallet}" />
-
-            <TextView
-                android:id="@+id/historyTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/sendBtn"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="History"
-                android:textSize="16sp"
-                app:isGone="@{!viewModel.hasWallet}" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/historyRecyclerView"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/historyTv"
-                app:isGone="@{!viewModel.hasWallet}"
+                android:layout_below="@id/app_bar_layout"
+                android:background="@color/transparent">
 
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                <TextView
+                    android:id="@+id/text1"
+                    style="@style/font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:text="Total balance"
+                    android:textColor="@color/grey" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="You have no wallet"
-                android:textSize="35sp"
-                app:isGone="@{viewModel.hasWallet}" />
+                <TextView
+                    android:id="@+id/balanceTv"
+                    style="@style/font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text1"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@{viewModel.balance}"
+                    android:textColor="@color/white"
+                    android:textSize="42sp"
+                    app:isGone="@{!viewModel.hasWallet}"
+                    tools:text="2.3101 ETH" />
+
+                <Button
+                    android:id="@+id/depositBtn"
+                    style="@style/deposit_button"
+                    android:layout_below="@id/balanceTv"
+                    android:layout_marginStart="85dp"
+                    android:text="Deposit"
+                    app:isGone="@{!viewModel.hasWallet}" />
+
+                <Button
+                    android:id="@+id/sendBtn"
+                    style="@style/deposit_button"
+                    android:layout_below="@id/balanceTv"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="85dp"
+                    android:text="Send"
+                    app:isGone="@{!viewModel.hasWallet}" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sendBtn"
+                    android:background="@drawable/round_dark_rec"
+                    android:padding="20dp">
+
+
+                    <TextView
+                        android:id="@+id/text2"
+                        style="@style/font"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:text="Recent Transactions"
+                        android:textColor="@color/white"
+                        android:textSize="22sp" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/historyRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/text2"
+                        app:isGone="@{!viewModel.hasWallet}"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
 
         </RelativeLayout>
     </FrameLayout>

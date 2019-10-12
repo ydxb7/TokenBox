@@ -76,35 +76,39 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                 if (history.from == history.myAddress && history.to == history.myAddress) {
                     state = Direction.SELF
                     addressTv.text = history.myAddress
-                    fromToTv.text = "Self: "
+                    fromToTv.text = "SELF"
                 } else if (history.myAddress == history.to) {
                     state = Direction.IN
                     addressTv.text = history.from
-                    fromToTv.text = "From: "
+                    fromToTv.text = "IN"
                 } else {
                     state = Direction.OUT
                     addressTv.text = history.to
-                    fromToTv.text = "To: "
+                    fromToTv.text = "OUT"
                 }
 
 
                 if (history.isError == 1) {
-                    valueTv.text = "Error"
-                    valueTv.setTextColor(Color.RED)
+                    valueTv.text = "ERROR"
+                    valueTv.setTextColor(Color.RED) // red
+                    colorBar.setBackgroundColor(Color.RED) // red
                 } else {
                     when (state) {
                         Direction.SELF -> {
                             valueTv.text = "+ ${ether} ETH"
                             valueTv.setTextColor(Color.GRAY)
+                            colorBar.setBackgroundColor(Color.GRAY)
                         }
                         Direction.OUT -> {
                             valueTv.text = "- ${ether} ETH"
-                            valueTv.setTextColor(Color.RED)
+                            valueTv.setTextColor(Color.RED) // red
+                            colorBar.setBackgroundColor(Color.RED)
                         }
                         Direction.IN -> {
 
                             valueTv.text = "+ ${ether} ETH"
                             valueTv.setTextColor(Color.GREEN)
+                            colorBar.setBackgroundColor(Color.GREEN)
                         }
                     }
 
