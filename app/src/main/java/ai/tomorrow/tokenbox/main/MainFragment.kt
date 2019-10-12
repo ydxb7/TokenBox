@@ -51,12 +51,18 @@ class MainFragment : Fragment() {
             adapter.submitList(it)
         })
 
+        viewModel.balance.observe(this, Observer {
+            Log.d(TAG, "the balance change, so get history again.")
+            // the balance change, so get history again.
+            viewModel.refreshHistoryDatabaseFromNetwork()
+        })
+
 
         viewModel.myAddress.observe(this, Observer {
             if (it != null) {
                 binding.hasWallet = true
                 viewModel.startPollingBalance()
-                viewModel.refreshHistoryDatabaseFromNetwork()
+                viewModel.changeHistoryDataset()
             } else {
                 binding.hasWallet = false
                 viewModel.stopPollingBalance()

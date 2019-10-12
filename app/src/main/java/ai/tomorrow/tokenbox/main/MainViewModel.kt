@@ -83,6 +83,38 @@ class MainViewModel(private val application: Application,
         backgroundHandler = Handler(backgroundThread.looper)
     }
 
+    fun changeHistoryDataset(){
+        Log.d(TAG, "changeHistoryDataset: remove all data in the dataset and get new data for new address")
+        val address = _myAddress.value
+        if (address.isNullOrEmpty()) return
+        uiScope.launch {
+            withContext(Dispatchers.IO){
+
+                database.clear()
+                var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
+                    "account",
+                    "txlist",
+                    address,
+                    0,
+                    99999999,
+                    "desc",
+                    API_KEY_TOKEN
+                )
+
+                try {
+                    var histories = getHistoryDeferred.await().result
+                    database.insertAll(*histories.asDatabaseModel(address))
+
+
+                    Log.d(TAG, "databaseHistories.value size = ${databaseHistories.value?.size}")
+                    Log.d(TAG, "databaseHistories.value = $databaseHistories")
+                } catch (e: Exception){
+                    Log.d(TAG, "Fail: ${e.message}")
+                }
+            }
+        }
+    }
+
 
     fun refreshHistoryDatabaseFromNetwork(){
         Log.d(TAG, "refreshHistoryDatabaseFromNetwork")

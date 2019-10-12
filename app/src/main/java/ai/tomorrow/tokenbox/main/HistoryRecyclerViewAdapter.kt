@@ -2,6 +2,7 @@ package ai.tomorrow.tokenbox.main
 
 import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.databinding.ListItemHistoryBinding
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -57,18 +58,17 @@ class HistoryRecyclerViewAdapter :
 
                 if (history.isError == 1) {
                     valueTv.text = "Error"
+                    valueTv.setTextColor(Color.RED)
                 } else {
                     if (isFrom) {
                         valueTv.text = "+ ${ether} ETH"
+                        valueTv.setTextColor(Color.GREEN)
 //                        valueTv.textColors
                     } else {
                         valueTv.text = "- ${ether} ETH"
+                        valueTv.setTextColor(Color.RED)
                     }
                 }
-
-
-
-
 
                 executePendingBindings()
             }
