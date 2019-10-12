@@ -91,7 +91,7 @@
                     android:id="@+id/depositBtn"
                     style="@style/deposit_button"
                     android:layout_below="@id/balanceTv"
-                    android:layout_marginStart="85dp"
+                    android:layout_marginStart="75dp"
                     android:text="Deposit" />
 
                 <Button
@@ -99,7 +99,7 @@
                     style="@style/deposit_button"
                     android:layout_below="@id/balanceTv"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="85dp"
+                    android:layout_marginEnd="75dp"
                     android:text="Send" />
 
                 <RelativeLayout

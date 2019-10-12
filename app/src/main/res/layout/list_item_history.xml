@@ -12,7 +12,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="@color/darkBackground2">
 
         <View
@@ -79,6 +79,33 @@
             android:textColor="@color/green"
             android:textSize="20sp"
             tools:text="+2.1 ETH" />
+
+        <RelativeLayout
+            android:id="@+id/pendingLo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#bb000000">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:indeterminateTint="#ffdd00"
+                android:layout_marginStart="150dp" />
+
+            <TextView
+                style="@style/font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toRightOf="@id/progressBar"
+                android:text="pending..."
+                android:textColor="#ffdd00"
+                android:textSize="24dp" />
+
+        </RelativeLayout>
 
 
     </RelativeLayout>

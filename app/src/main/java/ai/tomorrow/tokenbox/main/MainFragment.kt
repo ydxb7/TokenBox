@@ -75,6 +75,7 @@ class MainFragment : Fragment() {
         viewModel.currentAddress.observe(this, Observer { newAddress ->
             if (!newAddress.isNullOrEmpty() && newAddress != currentAddress) {
                 Log.d(TAG, "XXX YYY address changed.")
+                currentAddress = newAddress
                 viewModel.resetDataset()
             } else if (!newAddress.isNullOrEmpty()) {
                 Log.d(TAG, "XXX YYY address not change.")

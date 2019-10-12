@@ -21,6 +21,7 @@
     <color name="darkBackground2">#40414e</color>
     <color name="darkGreyBar">#202126</color>
     <color name="transparent">#00000000</color>
+    <color name="halfTransparent">#55FFFFFF</color>
 
 
 </resources>

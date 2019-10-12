@@ -5,6 +5,7 @@ import ai.tomorrow.tokenbox.databinding.ListItemHistoryBinding
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.web3j.utils.Convert
@@ -83,10 +84,12 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                 }
 
                 if (history.isError == 1) {
+                    pendingLo.visibility = View.GONE
                     valueTv.text = "ERROR"
                     valueTv.setTextColor(Color.RED) // red
                     colorBar.setBackgroundColor(Color.RED) // red
                 } else {
+                    pendingLo.visibility = View.GONE
                     when (state) {
                         Direction.SELF -> {
                             valueTv.text = "  ${ether} ETH"
@@ -99,11 +102,14 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                             colorBar.setBackgroundColor(Color.RED)
                         }
                         Direction.IN -> {
-
                             valueTv.text = "+ ${ether} ETH"
                             valueTv.setTextColor(Color.GREEN)
                             colorBar.setBackgroundColor(Color.GREEN)
                         }
+                    }
+
+                    if (history.isError == 2){
+                        pendingLo.visibility = View.VISIBLE
                     }
                 }
                 executePendingBindings()
