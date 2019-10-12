@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/recipientAddressEv"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="35dp"
                 android:text="Balance:"
                 android:textColor="@color/black"
                 android:textSize="18dp" />
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/balanceTv"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="35dp"
                 android:text="Amount:"
                 android:textColor="@color/black"
                 android:textSize="18dp" />
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/amountEv"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="35dp"
                 android:text="Gas Price:"
                 android:textColor="@color/black"
                 android:textSize="18dp" />
