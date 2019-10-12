@@ -1,6 +1,10 @@
 package ai.tomorrow.tokenbox.main
 
 import ai.tomorrow.tokenbox.R
+import ai.tomorrow.tokenbox.data.DatabaseHistory
+import ai.tomorrow.tokenbox.data.HistoryDao
+import ai.tomorrow.tokenbox.data.asDatabaseModel
+import ai.tomorrow.tokenbox.network.EtherscanApi
 import android.app.Application
 import android.os.Handler
 import android.os.HandlerThread
@@ -9,20 +13,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.*
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
+import java.lang.Exception
+import java.lang.Runnable
 import java.math.BigDecimal
 
 const val UPDATE_FREQUENCY = 30000L
+const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
-class MainViewModel(private val application: Application) : ViewModel() {
+class MainViewModel(private val application: Application,
+                    val database: HistoryDao) : ViewModel() {
 
     private val TAG = "MainViewModel"
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
 
+    private var viewModelJob = Job()
+    private val uiScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
 
     private val _myAddress = MutableLiveData<String>()
@@ -36,6 +47,11 @@ class MainViewModel(private val application: Application) : ViewModel() {
     private val _balance = MutableLiveData<String>()
     val balance: LiveData<String>
         get() = _balance
+
+    val databaseHistories : LiveData<List<DatabaseHistory>> = database.getAllHistory()
+//    val databaseHistories: LiveData<List<DatabaseHistory>>
+//        get() = _histories
+
 
     private var uiHandler = Handler()
     private lateinit var backgroundHandler: Handler
@@ -51,7 +67,16 @@ class MainViewModel(private val application: Application) : ViewModel() {
 
     init {
         Log.d(TAG, "init")
-        updateMyWallet()
+        getCurrentWallet()
+
+
+
+//
+//        uiScope.launch {
+//            withContext(Dispatchers.IO){
+//
+//            }
+//        }
 
         backgroundThread = HandlerThread("backgroundHandler")
         backgroundThread.start()
@@ -59,21 +84,51 @@ class MainViewModel(private val application: Application) : ViewModel() {
     }
 
 
-    fun updateMyWallet() {
-        Log.d(TAG, "updateMyWallet")
+    fun refreshHistoryDatabaseFromNetwork(){
+        Log.d(TAG, "refreshHistoryDatabaseFromNetwork")
+        val address = _myAddress.value
+        if (address.isNullOrEmpty()) return
+
+        uiScope.launch {
+            withContext(Dispatchers.IO){
+                var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
+                    "account",
+                    "txlist",
+                    address,
+                    0,
+                    99999999,
+                    1,
+                    10,
+                    "asc",
+                    API_KEY_TOKEN
+                )
+
+                try {
+                    var histories = getHistoryDeferred.await().result
+                    database.insertAll(*histories.asDatabaseModel(address))
+
+
+                    Log.d(TAG, "databaseHistories.value size = ${databaseHistories.value?.size}")
+                    Log.d(TAG, "databaseHistories.value = $databaseHistories")
+                } catch (e: Exception){
+                    Log.d(TAG, "Fail: ${e.message}")
+                }
+            }
+        }
+    }
+
+
+
+
+    fun getCurrentWallet() {
+        Log.d(TAG, "getCurrentWallet")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
         _myAddress.value =
             sharedPreferences.getString(application.getString(R.string.wallet_address), "") ?: ""
         _myWalletName.value =
             sharedPreferences.getString(application.getString(R.string.wallet_name), "") ?: ""
 
-
-
-
-
         Log.d(TAG, "_myAddress.value = ${_myAddress.value}")
-
-
     }
 
     fun startPollingBalance(){

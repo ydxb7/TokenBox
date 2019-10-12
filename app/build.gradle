@@ -92,5 +92,24 @@ dependencies {
     implementation "org.koin:koin-androidx-viewmodel:2.0.1"
 // Koin AndroidX Experimental features
     implementation "org.koin:koin-androidx-ext:2.0.1"
+
+    // Retrofit with Scalar Converters
+    implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
+    implementation "com.squareup.retrofit2:converter-scalars:$version_retrofit"
+
+    // Moshi
+    implementation "com.squareup.moshi:moshi:$version_moshi"
+    implementation "com.squareup.moshi:moshi-kotlin:$version_moshi"
+    implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
+
+    // Retrofit Coroutines Support
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
+
+    // Koin AndroidX Scope features
+    implementation "org.koin:koin-androidx-scope:2.0.1"
+    // Koin AndroidX ViewModel features
+    implementation "org.koin:koin-androidx-viewmodel:2.0.1"
+    // Koin AndroidX Experimental features
+    implementation "org.koin:koin-androidx-ext:2.0.1"
 }
 

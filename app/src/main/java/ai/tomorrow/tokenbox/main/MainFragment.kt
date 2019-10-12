@@ -1,5 +1,7 @@
 package ai.tomorrow.tokenbox.main
 
+import ai.tomorrow.tokenbox.data.HistoryDatabase
+import ai.tomorrow.tokenbox.data.asDatabaseModel
 import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
 import android.os.Bundle
 import android.util.Log
@@ -28,8 +30,9 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
         val application = requireNotNull(this.activity).application
+        val database = HistoryDatabase.getInstance(application).historyDao
 
-        val viewModelFactory = MainViewModelFactory(application)
+        val viewModelFactory = MainViewModelFactory(application, database)
 
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
@@ -41,6 +44,7 @@ class MainFragment : Fragment() {
             if (it != null) {
                 binding.hasWallet = true
                 viewModel.startPollingBalance()
+                viewModel.refreshHistoryDatabaseFromNetwork()
             } else {
                 binding.hasWallet = false
                 viewModel.stopPollingBalance()
@@ -49,7 +53,9 @@ class MainFragment : Fragment() {
         })
 
 
-
+        viewModel.databaseHistories.observe(this, Observer {
+            Log.d(TAG, "histories in the dataset = $it")
+        })
 
 
 
@@ -76,7 +82,7 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
-        binding.viewModel?.updateMyWallet()
+        binding.viewModel?.getCurrentWallet()
     }
 
     override fun onPause() {

@@ -32,6 +32,9 @@ buildscript {
         uiAutomatorVersion = '2.2.0'
         viewPagerVersion = '1.0.0-beta03'
         workVersion = '2.1.0'
+        version_retrofit = "2.5.0"
+        version_retrofit_coroutines_adapter = "0.9.2"
+        version_moshi = "1.8.0"
     }
     repositories {
         google()
