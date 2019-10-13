@@ -1,47 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
-            android:id="@+id/coordinator_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+        android:id="@+id/coordinator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <!--            Toolbar            -->
         <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/app_bar_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white">
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
 
             <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/defaultWalletToolBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                android:id="@+id/defaultWalletToolBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <ImageView
-                            android:id="@+id/backBtn"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_centerVertical="true"
-                            android:padding="10dp"
-                            android:src="@drawable/back_icon" />
+                        android:id="@+id/backBtn"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:padding="10dp"
+                        android:src="@drawable/back_icon" />
 
                     <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
-                            android:text="Import Wallet"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="Import Wallet"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
 
                 </RelativeLayout>
@@ -51,93 +49,96 @@
         </com.google.android.material.appbar.AppBarLayout>
 
 
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_below="@id/app_bar_layout">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:text="Copy and paste the Mnemonic phrase tp the input field." />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/scanRtn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/scan_icon"
-                android:layout_gravity="center"
-                />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:text="Copy and paste the Mnemonic phrase tp the input field." />
+
+                <Button
+                    android:id="@+id/scanRtn"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/scan_icon" />
 
 
-            <EditText
-                android:id="@+id/mnemonicEv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="20dp"
-                android:gravity="top"
-                android:padding="10dp"
-                android:background="@drawable/grey_border_round_rectangle"
-                android:hint="Enter mnemonic phrases separated by spaces"
-                android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
-                android:maxLines="3"
-                android:minLines="3" />
+                <EditText
+                    android:id="@+id/mnemonicEv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/grey_border_round_rectangle"
+                    android:gravity="top"
+                    android:hint="Enter mnemonic phrases separated by spaces"
+                    android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
+                    android:maxLines="3"
+                    android:minLines="3"
+                    android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/walletNameEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="20dp"
-                android:ems="10"
-                android:hint="Wallet name" />
+                <EditText
+                    android:id="@+id/walletNameEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:ems="10"
+                    android:hint="Wallet name" />
 
-            <EditText
-                android:id="@+id/walletPasswordEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="20dp"
-                android:ems="10"
-                android:hint="Wallet password"
-                android:inputType="textPassword" />
+                <EditText
+                    android:id="@+id/walletPasswordEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:ems="10"
+                    android:hint="Wallet password"
+                    android:inputType="textPassword" />
 
-            <EditText
-                android:id="@+id/repeatPasswordEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:ems="10"
-                android:hint="Repeat password"
-                android:inputType="textPassword" />
+                <EditText
+                    android:id="@+id/repeatPasswordEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:ems="10"
+                    android:hint="Repeat password"
+                    android:inputType="textPassword" />
 
-            <EditText
-                android:id="@+id/passwordHintEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:ems="10"
-                android:hint="Password hint" />
+                <EditText
+                    android:id="@+id/passwordHintEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:ems="10"
+                    android:hint="Password hint" />
 
-            <Button
-                android:id="@+id/importWalletBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@drawable/blue_round_corner_rectangle"
-                android:text="Start Importing"
-                android:textColor="@color/white" />
+                <Button
+                    android:id="@+id/importWalletBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/blue_round_corner_rectangle"
+                    android:text="Start Importing"
+                    android:textColor="@color/white" />
 
-        </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </RelativeLayout>
 
 </layout>

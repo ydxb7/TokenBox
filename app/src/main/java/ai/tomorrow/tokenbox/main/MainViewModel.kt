@@ -22,7 +22,7 @@ import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
 import java.math.BigDecimal
 
-const val UPDATE_FREQUENCY = 20000L
+const val UPDATE_FREQUENCY = 5000L
 const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
 class MainViewModel(
