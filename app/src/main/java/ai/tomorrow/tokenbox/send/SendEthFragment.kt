@@ -4,6 +4,7 @@ import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.HistoryDao
 import ai.tomorrow.tokenbox.data.HistoryDatabase
+import ai.tomorrow.tokenbox.data.getDatabase
 import ai.tomorrow.tokenbox.databinding.FragmentSendEthBinding
 import android.content.Intent
 import android.os.Bundle
@@ -70,7 +71,7 @@ class SendEthFragment : Fragment() {
         binding = FragmentSendEthBinding.inflate(inflater, container, false)
 
         val application = requireNotNull(this.activity).application
-        database = HistoryDatabase.getInstance(application).historyDao
+        database = getDatabase(application).historyDao
 
         // get balance from bundle
         val balanceString = SendEthFragmentArgs.fromBundle(requireNotNull(arguments)).balance

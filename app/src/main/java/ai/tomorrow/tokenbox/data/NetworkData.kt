@@ -9,6 +9,7 @@ data class ResultResponse(
     val result: List<NetworkHistory>
 )
 
+@Entity(tableName = "balance_table")
 data class BalanceResponse(
     val status: Int,
     val message: String,

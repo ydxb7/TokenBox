@@ -1,7 +1,6 @@
 package ai.tomorrow.tokenbox.main
 
 import ai.tomorrow.tokenbox.R
-import ai.tomorrow.tokenbox.data.HistoryDatabase
 import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
 import android.os.Bundle
 import android.util.Log
@@ -39,9 +38,8 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
         val application = requireNotNull(this.activity).application
-        val database = HistoryDatabase.getInstance(application).historyDao
 
-        val viewModelFactory = MainViewModelFactory(application, database)
+        val viewModelFactory = MainViewModelFactory(application)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 

@@ -4,7 +4,9 @@ import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.HistoryDao
 import ai.tomorrow.tokenbox.data.asDatabaseModel
+import ai.tomorrow.tokenbox.data.getDatabase
 import ai.tomorrow.tokenbox.network.EtherscanApi
+import ai.tomorrow.tokenbox.repository.Repository
 import android.app.Application
 import android.os.Handler
 import android.os.HandlerThread
@@ -26,8 +28,7 @@ const val UPDATE_FREQUENCY = 5000L
 const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
 class MainViewModel(
-    private val application: Application,
-    val database: HistoryDao
+    private val application: Application
 ) : ViewModel() {
 
     private val TAG = "MainViewModel"
@@ -35,7 +36,6 @@ class MainViewModel(
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
 
     // coroutine
-    val mutex = Mutex()
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -52,7 +52,7 @@ class MainViewModel(
     val balance: LiveData<String>
         get() = _balance
 
-    val databaseHistories: LiveData<List<DatabaseHistory>> = database.getAllHistory()
+//    val databaseHistories: LiveData<List<DatabaseHistory>> = database.getAllHistory()
 
     val hasWallet = Transformations.map(currentAddress) {
         !currentAddress.value.isNullOrBlank()
@@ -70,14 +70,27 @@ class MainViewModel(
         }
     }
 
+    private val database = getDatabase(application)
+
+    private val repository = Repository(database)
+
     init {
         Log.d(TAG, "init")
         getCurrentWallet()
+
+        if (!currentAddress.value.isNullOrEmpty()){
+            uiScope.launch {
+                repository.refreshHistories(requireNotNull(currentAddress.value))
+            }
+        }
 
         backgroundThread = HandlerThread("backgroundHandler")
         backgroundThread.start()
         backgroundHandler = Handler(backgroundThread.looper)
     }
+
+    // LiveData histories
+    val databaseHistories = repository.histories
 
     /**
      * This method will be invoked when wallet changes.
@@ -88,12 +101,7 @@ class MainViewModel(
         val address = _currentAddress.value
         if (address.isNullOrEmpty()) return
         uiScope.launch {
-            withContext(Dispatchers.IO) {
-                mutex.withLock {
-                    database.clear()
-                    fetchHistoryAndBalanceByAddress(address)
-                }
-            }
+            repository.resetHistories(address)
         }
     }
 
@@ -110,15 +118,15 @@ class MainViewModel(
     }
 
     private suspend fun fetchHistoryAndBalanceByAddress(address: String): Int {
-        var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
-            "account",
-            "txlist",
-            address,
-            0,
-            99999999,
-            "desc",
-            API_KEY_TOKEN
-        )
+//        var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
+//            "account",
+//            "txlist",
+//            address,
+//            0,
+//            99999999,
+//            "desc",
+//            API_KEY_TOKEN
+//        )
 
         val getBalanceDeferred = EtherscanApi.retrofitService.getBalance(
             "account",
@@ -129,8 +137,8 @@ class MainViewModel(
         )
 
         return try {
-            var histories = getHistoryDeferred.await().result
-            database.insertAll(*histories.asDatabaseModel(address))
+//            var histories = getHistoryDeferred.await().result
+//            database.insertAll(*histories.asDatabaseModel(address))
 
             var balanceString = getBalanceDeferred.await().result
             val ether = Convert.fromWei(BigDecimal(balanceString), Convert.Unit.ETHER).toFloat()
