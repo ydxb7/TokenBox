@@ -174,35 +174,6 @@ class ImportWalletFragment : Fragment(), KeystoreStorage {
             putString(getString(R.string.wallet_mnemonic), mnemonic)
             putString(getString(R.string.wallet_private_key), privateKey)
         }
-
-        Log.d(
-            TAG,
-            "address form preference: ${sharedPreferences.getString(
-                getString(R.string.wallet_address),
-                ""
-            )}"
-        )
-        Log.d(
-            TAG,
-            "name form preference: ${sharedPreferences.getString(
-                getString(R.string.wallet_name),
-                ""
-            )}"
-        )
-        Log.d(
-            TAG,
-            "password form preference: ${sharedPreferences.getString(
-                getString(R.string.wallet_password),
-                ""
-            )}"
-        )
-        Log.d(
-            TAG,
-            "mnemonic form preference: ${sharedPreferences.getString(
-                getString(R.string.wallet_mnemonic),
-                ""
-            )}"
-        )
     }
 
     override fun getKeystoreDir(): File {

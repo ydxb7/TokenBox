@@ -85,10 +85,6 @@ class MainViewModel(
      * 2. get new data for database
      */
     fun resetDataset() {
-        Log.d(
-            TAG,
-            "resetDataset: remove all data in the dataset and get new data for new address"
-        )
         val address = _currentAddress.value
         if (address.isNullOrEmpty()) return
         uiScope.launch {

@@ -138,9 +138,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:background="@drawable/blue_round_corner_rectangle"
-                    android:text="Start Importing"
-                    android:maxLines="1"
                     android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:text="Start Importing"
                     android:textColor="@color/white" />
 
             </LinearLayout>
