@@ -62,10 +62,9 @@ class MainViewModel(
     private var uiHandler = Handler()
     private lateinit var backgroundHandler: Handler
     private lateinit var backgroundThread: HandlerThread
-    private val backgroundThreadRunner = object : Runnable {
+    private val refreshHistoryHandler = object : Runnable {
         override fun run() {
-            Log.d(TAG, "backgroundThreadRunner, thread name: ${Thread.currentThread().name}")
-//            getBalance()
+            Log.d(TAG, "refreshHistoryHandler, thread name: ${Thread.currentThread().name}")
             refreshHistoryDatabaseFromNetwork()
             backgroundHandler.postDelayed(this, UPDATE_FREQUENCY)
         }
@@ -88,7 +87,7 @@ class MainViewModel(
     fun resetDataset() {
         Log.d(
             TAG,
-            "XXX resetDataset: remove all data in the dataset and get new data for new address"
+            "resetDataset: remove all data in the dataset and get new data for new address"
         )
         val address = _currentAddress.value
         if (address.isNullOrEmpty()) return
@@ -96,7 +95,7 @@ class MainViewModel(
             withContext(Dispatchers.IO) {
                 mutex.withLock {
                     database.clear()
-                    fetchDataFromNetAndUpdateDatabase(address)
+                    fetchHistoryAndBalanceByAddress(address)
                 }
             }
         }
@@ -109,12 +108,12 @@ class MainViewModel(
 
         uiScope.launch {
             withContext(Dispatchers.IO) {
-                fetchDataFromNetAndUpdateDatabase(address)
+                fetchHistoryAndBalanceByAddress(address)
             }
         }
     }
 
-    private suspend fun fetchDataFromNetAndUpdateDatabase(address: String): Int {
+    private suspend fun fetchHistoryAndBalanceByAddress(address: String): Int {
         var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
             "account",
             "txlist",
@@ -163,43 +162,18 @@ class MainViewModel(
 
     fun startPollingData() {
         Log.d(TAG, "startPollingData: make request every 30 second")
-        backgroundHandler.post(backgroundThreadRunner)
+        backgroundHandler.post(refreshHistoryHandler)
     }
 
     fun stopPollingData() {
         Log.d(TAG, "stopPollingData: stop")
-        backgroundHandler.removeCallbacks(backgroundThreadRunner)
+        backgroundHandler.removeCallbacks(refreshHistoryHandler)
     }
-
-
-//    private fun getBalance() {
-//        Log.d(TAG, "get balance, use web3j")
-//
-//        val address = currentAddress.value
-//
-//        if (!address.isNullOrEmpty()) {
-//            // send asynchronous requests to get balance
-//            try {
-//                val ethGetBalance = web3j
-//                    .ethGetBalance(address, DefaultBlockParameterName.LATEST)
-//                    .sendAsync()
-//                    .get()
-//
-//                val wei = ethGetBalance.balance
-//                val ether = Convert.fromWei(BigDecimal(wei), Convert.Unit.ETHER).toFloat()
-//
-//                uiHandler.post {
-//                    _balance.value = "$ether ETH"
-//                }
-//            } catch (e: ClientConnectionException) {
-//                Log.d(TAG, e.message)
-//            }
-//        }
-//    }
 
     override fun onCleared() {
         super.onCleared()
         stopPollingData()
+        backgroundThread.stop()
     }
 
 }

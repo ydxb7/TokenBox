@@ -200,14 +200,12 @@ class SendEthFragment : Fragment() {
 
         if (!transactionHash.isNullOrEmpty()){
             Log.d(TAG, "You have successfully send a transaction!")
-            Log.d(TAG, "YYY insert pending history")
             val currentTimestamp = Timestamp(Date().time).time
 
             val pendingHistory = DatabaseHistory(
                 0L, currentTimestamp, transactionHash, 0L, "", 0, myAddress, toAddress,
                 amountWei.toString(), "", "", 2, 0L, 0L, 0L, myAddress
             )
-            Log.d(TAG, "YYY insert pending history: $pendingHistory")
             database.insert(pendingHistory)
 
             uiHandler.post{

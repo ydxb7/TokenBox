@@ -61,27 +61,20 @@ class MainFragment : Fragment() {
 
     private fun setupLiveData() {
         viewModel.databaseHistories.observe(this, Observer {
-            Log.d(TAG, "histories in the dataset = $it")
             Log.d(TAG, "histories in the dataset.size = ${it.size}")
 
             if (!it.isNullOrEmpty()) {
-                Log.d(TAG, "XXX first  = ${it[0].value}")
-                Log.d(TAG, "XXX histories in the dataset.size = ${it.size}")
                 adapter.setData(it)
             }
-
         })
 
         viewModel.currentAddress.observe(this, Observer { newAddress ->
             if (!newAddress.isNullOrEmpty() && newAddress != currentAddress) {
-                Log.d(TAG, "XXX YYY address changed.")
                 currentAddress = newAddress
                 viewModel.resetDataset()
             } else if (!newAddress.isNullOrEmpty()) {
-                Log.d(TAG, "XXX YYY address not change.")
                 viewModel.startPollingData()
             } else {
-                Log.d(TAG, "XXX YYY address is empty.")
                 viewModel.stopPollingData()
             }
         })
@@ -120,24 +113,22 @@ class MainFragment : Fragment() {
                 ""
             )
 
-            if (!myAddress.isNullOrEmpty()) {
-                try {
-                    val multiFormatWriter = MultiFormatWriter()
-                    val bitMatrix =
-                        multiFormatWriter.encode(myAddress, BarcodeFormat.QR_CODE, 200, 200)
-                    val barcodeEncoder = BarcodeEncoder()
-                    val bitmap = barcodeEncoder.createBitmap(bitMatrix)
-                    val dialogFragment = QrcodeDialogFragment()
+            try {
+                val multiFormatWriter = MultiFormatWriter()
+                val bitMatrix =
+                    multiFormatWriter.encode(myAddress, BarcodeFormat.QR_CODE, 200, 200)
+                val barcodeEncoder = BarcodeEncoder()
+                val bitmap = barcodeEncoder.createBitmap(bitMatrix)
+                val dialogFragment = QrcodeDialogFragment()
 
-                    val bundle = Bundle()
-                    bundle.putParcelable("qrcode", bitmap)
+                val bundle = Bundle()
+                bundle.putParcelable("qrcode", bitmap)
 
-                    dialogFragment.arguments = bundle
-                    dialogFragment.show(fragmentManager!!, QrcodeDialogFragment::class.simpleName)
+                dialogFragment.arguments = bundle
+                dialogFragment.show(fragmentManager!!, QrcodeDialogFragment::class.simpleName)
 
-                } catch (e: WriterException) {
-                    Log.d(TAG, e.message)
-                }
+            } catch (e: WriterException) {
+                Log.e(TAG, e.message)
             }
         }
     }
