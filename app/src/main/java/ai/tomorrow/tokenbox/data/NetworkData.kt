@@ -9,6 +9,12 @@ data class ResultResponse(
     val result: List<NetworkHistory>
 )
 
+data class BalanceResponse(
+    val status: Int,
+    val message: String,
+    val result: String
+)
+
 data class NetworkHistory(
     val blockNumber: Long,
     val timeStamp: Long,

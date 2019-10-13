@@ -18,8 +18,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.web3j.protocol.Web3j
-import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.exceptions.ClientConnectionException
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
 import java.math.BigDecimal
@@ -67,7 +65,7 @@ class MainViewModel(
     private val backgroundThreadRunner = object : Runnable {
         override fun run() {
             Log.d(TAG, "backgroundThreadRunner, thread name: ${Thread.currentThread().name}")
-            getBalance()
+//            getBalance()
             refreshHistoryDatabaseFromNetwork()
             backgroundHandler.postDelayed(this, UPDATE_FREQUENCY)
         }
@@ -98,7 +96,6 @@ class MainViewModel(
             withContext(Dispatchers.IO) {
                 mutex.withLock {
                     database.clear()
-                    getBalance()
                     fetchDataFromNetAndUpdateDatabase(address)
                 }
             }
@@ -128,11 +125,23 @@ class MainViewModel(
             API_KEY_TOKEN
         )
 
+        val getBalanceDeferred = EtherscanApi.retrofitService.getBalance(
+            "account",
+            "balance",
+            address,
+            "latest",
+            API_KEY_TOKEN
+        )
+
         return try {
             var histories = getHistoryDeferred.await().result
             database.insertAll(*histories.asDatabaseModel(address))
 
-
+            var balanceString = getBalanceDeferred.await().result
+            val ether = Convert.fromWei(BigDecimal(balanceString), Convert.Unit.ETHER).toFloat()
+            uiHandler.post {
+                _balance.value = "$ether ETH"
+            }
             Log.d(TAG, "databaseHistories.value size = ${databaseHistories.value?.size}")
             Log.d(TAG, "databaseHistories.value = $databaseHistories")
         } catch (e: Exception) {
@@ -163,30 +172,30 @@ class MainViewModel(
     }
 
 
-    private fun getBalance() {
-        Log.d(TAG, "get balance, use web3j")
-
-        val address = currentAddress.value
-
-        if (!address.isNullOrEmpty()) {
-            // send asynchronous requests to get balance
-            try {
-                val ethGetBalance = web3j
-                    .ethGetBalance(address, DefaultBlockParameterName.LATEST)
-                    .sendAsync()
-                    .get()
-
-                val wei = ethGetBalance.balance
-                val ether = Convert.fromWei(BigDecimal(wei), Convert.Unit.ETHER).toFloat()
-
-                uiHandler.post {
-                    _balance.value = "$ether ETH"
-                }
-            } catch (e: ClientConnectionException) {
-                Log.d(TAG, e.message)
-            }
-        }
-    }
+//    private fun getBalance() {
+//        Log.d(TAG, "get balance, use web3j")
+//
+//        val address = currentAddress.value
+//
+//        if (!address.isNullOrEmpty()) {
+//            // send asynchronous requests to get balance
+//            try {
+//                val ethGetBalance = web3j
+//                    .ethGetBalance(address, DefaultBlockParameterName.LATEST)
+//                    .sendAsync()
+//                    .get()
+//
+//                val wei = ethGetBalance.balance
+//                val ether = Convert.fromWei(BigDecimal(wei), Convert.Unit.ETHER).toFloat()
+//
+//                uiHandler.post {
+//                    _balance.value = "$ether ETH"
+//                }
+//            } catch (e: ClientConnectionException) {
+//                Log.d(TAG, e.message)
+//            }
+//        }
+//    }
 
     override fun onCleared() {
         super.onCleared()

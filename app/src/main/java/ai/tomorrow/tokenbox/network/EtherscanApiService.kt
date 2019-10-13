@@ -1,5 +1,6 @@
 package ai.tomorrow.tokenbox.network
 
+import ai.tomorrow.tokenbox.data.BalanceResponse
 import ai.tomorrow.tokenbox.data.ResultResponse
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
@@ -49,6 +50,15 @@ interface EtherscanApiService {
                    @Query("apikey") apikey: String
     ):
             Deferred<ResultResponse>
+
+    @GET("api")
+    fun getBalance(@Query("module") module: String,
+                   @Query("action") action: String,
+                   @Query("address") address: String,
+                   @Query("tag") tag: String,
+                   @Query("apikey") apikey: String
+    ):
+            Deferred<BalanceResponse>
 }
 
 /**
