@@ -56,7 +56,7 @@
             </com.google.android.material.appbar.AppBarLayout>
 
             <!--                 body                  -->
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/app_bar_layout">
@@ -127,13 +127,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/text2"
+                            android:nestedScrollingEnabled="false"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                     </RelativeLayout>
 
                 </RelativeLayout>
 
-            </ScrollView>
+            </androidx.core.widget.NestedScrollView>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
