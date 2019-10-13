@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
-                    android:text="Copy and paste the Mnemonic phrase tp the input field." />
+                    android:text="Copy and paste the Mnemonic phrase to the input field." />
 
                 <Button
                     android:id="@+id/scanRtn"
