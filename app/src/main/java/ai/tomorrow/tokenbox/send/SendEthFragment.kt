@@ -73,7 +73,7 @@ class SendEthFragment : Fragment() {
         database = HistoryDatabase.getInstance(application).historyDao
 
         // get balance from bundle
-        val balanceString = SendEthFragmentArgs.fromBundle(arguments!!).balance
+        val balanceString = SendEthFragmentArgs.fromBundle(requireNotNull(arguments)).balance
         val balance = balanceString.split(" ")[0].toBigDecimal()
         val balanceWei = Convert.toWei(balance, Convert.Unit.ETHER).toBigInteger()
 

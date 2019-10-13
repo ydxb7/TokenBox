@@ -26,7 +26,7 @@ class QrcodeDialogFragment : DialogFragment() {
             false
         )
 
-        val qrcode = arguments!!.getParcelable<Bitmap>("qrcode")
+        val qrcode = requireNotNull(arguments).getParcelable<Bitmap>("qrcode")
         binding.root.qrIv.setImageBitmap(qrcode)
 
         return binding.root

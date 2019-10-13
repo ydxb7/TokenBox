@@ -125,7 +125,7 @@ class MainFragment : Fragment() {
                 bundle.putParcelable("qrcode", bitmap)
 
                 dialogFragment.arguments = bundle
-                dialogFragment.show(fragmentManager!!, QrcodeDialogFragment::class.simpleName)
+                dialogFragment.show(requireNotNull(fragmentManager), QrcodeDialogFragment::class.simpleName)
 
             } catch (e: WriterException) {
                 Log.e(TAG, e.message)

@@ -153,9 +153,9 @@ class MainViewModel(
         Log.d(TAG, "getCurrentWallet and update LiveData _currentAddress")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
         _currentAddress.value =
-            sharedPreferences.getString(application.getString(R.string.wallet_address), "") ?: ""
+            sharedPreferences.getString(application.getString(R.string.wallet_address), "")
         _currentWalletName.value =
-            sharedPreferences.getString(application.getString(R.string.wallet_name), "") ?: ""
+            sharedPreferences.getString(application.getString(R.string.wallet_name), "")
 
         Log.d(TAG, "_currentAddress.value = ${_currentAddress.value}")
     }
