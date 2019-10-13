@@ -1,5 +1,6 @@
 package ai.tomorrow.tokenbox.repository
 
+import ai.tomorrow.tokenbox.data.DatabaseBalance
 import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.HistoryDatabase
 import ai.tomorrow.tokenbox.data.asDatabaseModel
@@ -16,15 +17,16 @@ class Repository (private val database: HistoryDatabase){
 
     val mutex = Mutex()
     val histories: LiveData<List<DatabaseHistory>> = database.historyDao.getAllHistory()
+    val balance: LiveData<DatabaseBalance> = database.historyDao.getBalance()
 
 
-    suspend fun refreshHistories(address: String){
+    suspend fun refreshAll(address: String){
         withContext(Dispatchers.IO){
             refresh(address)
         }
     }
 
-    suspend fun resetHistories(address: String){
+    suspend fun resetData(address: String){
         withContext(Dispatchers.IO) {
             mutex.withLock {
                 database.historyDao.clear()
@@ -34,6 +36,7 @@ class Repository (private val database: HistoryDatabase){
     }
 
     private suspend fun refresh(address: String) {
+        // refresh histories
         var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
             "account",
             "txlist",
@@ -45,7 +48,20 @@ class Repository (private val database: HistoryDatabase){
         )
         var histories = getHistoryDeferred.await().result
         database.historyDao.insertAll(*histories.asDatabaseModel(address))
+
+        // refresh balance
+        val getBalanceDeferred = EtherscanApi.retrofitService.getBalance(
+            "account",
+            "balance",
+            address,
+            "latest",
+            API_KEY_TOKEN
+        )
+
+        var balanceResponse = getBalanceDeferred.await()
+        database.historyDao.insertBalance(balanceResponse.asDatabaseModel())
     }
+
 
 
 }

@@ -1,11 +1,7 @@
 package ai.tomorrow.tokenbox.main
 
 import ai.tomorrow.tokenbox.R
-import ai.tomorrow.tokenbox.data.DatabaseHistory
-import ai.tomorrow.tokenbox.data.HistoryDao
-import ai.tomorrow.tokenbox.data.asDatabaseModel
 import ai.tomorrow.tokenbox.data.getDatabase
-import ai.tomorrow.tokenbox.network.EtherscanApi
 import ai.tomorrow.tokenbox.repository.Repository
 import android.app.Application
 import android.os.Handler
@@ -17,8 +13,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
@@ -48,15 +42,13 @@ class MainViewModel(
     val currentWalletName: LiveData<String>
         get() = _currentWalletName
 
-    private val _balance = MutableLiveData<String>()
-    val balance: LiveData<String>
-        get() = _balance
-
-//    val databaseHistories: LiveData<List<DatabaseHistory>> = database.getAllHistory()
-
     val hasWallet = Transformations.map(currentAddress) {
         !currentAddress.value.isNullOrBlank()
     }
+
+    private val database = getDatabase(application)
+
+    private val repository = Repository(database)
 
     // poll data
     private var uiHandler = Handler()
@@ -65,14 +57,10 @@ class MainViewModel(
     private val refreshHistoryHandler = object : Runnable {
         override fun run() {
             Log.d(TAG, "refreshHistoryHandler, thread name: ${Thread.currentThread().name}")
-            refreshHistoryDatabaseFromNetwork()
+            refreshAll()
             backgroundHandler.postDelayed(this, UPDATE_FREQUENCY)
         }
     }
-
-    private val database = getDatabase(application)
-
-    private val repository = Repository(database)
 
     init {
         Log.d(TAG, "init")
@@ -80,7 +68,7 @@ class MainViewModel(
 
         if (!currentAddress.value.isNullOrEmpty()){
             uiScope.launch {
-                repository.refreshHistories(requireNotNull(currentAddress.value))
+                repository.refreshAll(requireNotNull(currentAddress.value))
             }
         }
 
@@ -92,6 +80,15 @@ class MainViewModel(
     // LiveData histories
     val databaseHistories = repository.histories
 
+    val balance: LiveData<String> = Transformations.map(repository.balance){
+        if (it != null){
+            val ether = Convert.fromWei(BigDecimal(it.balance), Convert.Unit.ETHER).toFloat()
+            "$ether ETH"
+        } else{
+            ""
+        }
+    }
+
     /**
      * This method will be invoked when wallet changes.
      * 1. remove all the data in the database
@@ -101,57 +98,19 @@ class MainViewModel(
         val address = _currentAddress.value
         if (address.isNullOrEmpty()) return
         uiScope.launch {
-            repository.resetHistories(address)
+            repository.resetData(address)
         }
     }
 
-    fun refreshHistoryDatabaseFromNetwork() {
-        Log.d(TAG, "refreshHistoryDatabaseFromNetwork")
+    fun refreshAll() {
+        Log.d(TAG, "refreshAll")
         val address = _currentAddress.value
         if (address.isNullOrEmpty()) return
 
         uiScope.launch {
-            withContext(Dispatchers.IO) {
-                fetchHistoryAndBalanceByAddress(address)
-            }
+            repository.refreshAll(address)
         }
     }
-
-    private suspend fun fetchHistoryAndBalanceByAddress(address: String): Int {
-//        var getHistoryDeferred = EtherscanApi.retrofitService.getHistory(
-//            "account",
-//            "txlist",
-//            address,
-//            0,
-//            99999999,
-//            "desc",
-//            API_KEY_TOKEN
-//        )
-
-        val getBalanceDeferred = EtherscanApi.retrofitService.getBalance(
-            "account",
-            "balance",
-            address,
-            "latest",
-            API_KEY_TOKEN
-        )
-
-        return try {
-//            var histories = getHistoryDeferred.await().result
-//            database.insertAll(*histories.asDatabaseModel(address))
-
-            var balanceString = getBalanceDeferred.await().result
-            val ether = Convert.fromWei(BigDecimal(balanceString), Convert.Unit.ETHER).toFloat()
-            uiHandler.post {
-                _balance.value = "$ether ETH"
-            }
-            Log.d(TAG, "databaseHistories.value size = ${databaseHistories.value?.size}")
-            Log.d(TAG, "databaseHistories.value = $databaseHistories")
-        } catch (e: Exception) {
-            Log.d(TAG, "Fail: ${e.message}")
-        }
-    }
-
 
     fun getCurrentWallet() {
         Log.d(TAG, "getCurrentWallet and update LiveData _currentAddress")

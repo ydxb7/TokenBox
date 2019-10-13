@@ -9,12 +9,20 @@ data class ResultResponse(
     val result: List<NetworkHistory>
 )
 
-@Entity(tableName = "balance_table")
 data class BalanceResponse(
     val status: Int,
     val message: String,
     val result: String
 )
+
+@Entity(tableName = "balance_table")
+data class DatabaseBalance(
+    @PrimaryKey
+    val id: Int,
+    val balance: String
+)
+
+fun BalanceResponse.asDatabaseModel(): DatabaseBalance = DatabaseBalance(id = 1, balance = result)
 
 data class NetworkHistory(
     val blockNumber: Long,

@@ -20,4 +20,10 @@ interface HistoryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(history: DatabaseHistory)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertBalance(balance: DatabaseBalance)
+
+    @Query("select * from balance_table")
+    fun getBalance(): LiveData<DatabaseBalance>
 }
