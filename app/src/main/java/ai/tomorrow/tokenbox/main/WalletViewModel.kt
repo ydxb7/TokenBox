@@ -2,7 +2,7 @@ package ai.tomorrow.tokenbox.main
 
 import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.data.getDatabase
-import ai.tomorrow.tokenbox.repository.Repository
+import ai.tomorrow.tokenbox.repository.TransactionRepository
 import android.app.Application
 import android.os.Handler
 import android.os.HandlerThread
@@ -21,11 +21,11 @@ import java.math.BigDecimal
 const val UPDATE_FREQUENCY = 5000L
 const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
-class MainViewModel(
+class WalletViewModel(
     private val application: Application
 ) : ViewModel() {
 
-    private val TAG = "MainViewModel"
+    private val TAG = "WalletViewModel"
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
 
@@ -48,7 +48,7 @@ class MainViewModel(
 
     private val database = getDatabase(application)
 
-    private val repository = Repository(database)
+    private val repository = TransactionRepository(database)
 
     // poll data
     private var uiHandler = Handler()

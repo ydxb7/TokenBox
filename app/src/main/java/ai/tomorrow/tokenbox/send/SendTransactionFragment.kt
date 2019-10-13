@@ -2,8 +2,7 @@ package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.data.DatabaseHistory
-import ai.tomorrow.tokenbox.data.HistoryDao
-import ai.tomorrow.tokenbox.data.HistoryDatabase
+import ai.tomorrow.tokenbox.data.TransactionDao
 import ai.tomorrow.tokenbox.data.getDatabase
 import ai.tomorrow.tokenbox.databinding.FragmentSendEthBinding
 import android.content.Intent
@@ -42,9 +41,9 @@ const val GAS_LIMIT_MIN = 11000
 const val GAS_LIMIT_MAX = 31000
 
 
-class SendEthFragment : Fragment() {
+class SendTransactionFragment : Fragment() {
 
-    private val TAG = "SendEthFragment"
+    private val TAG = "SendTransactionFragment"
 
     private lateinit var binding: FragmentSendEthBinding
     private var toast: String? = null
@@ -60,7 +59,7 @@ class SendEthFragment : Fragment() {
     private lateinit var gasPriceWei: BigInteger
 
     //
-    private lateinit var database: HistoryDao
+    private lateinit var database: TransactionDao
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,10 +70,10 @@ class SendEthFragment : Fragment() {
         binding = FragmentSendEthBinding.inflate(inflater, container, false)
 
         val application = requireNotNull(this.activity).application
-        database = getDatabase(application).historyDao
+        database = getDatabase(application).transactionDao
 
         // get balance from bundle
-        val balanceString = SendEthFragmentArgs.fromBundle(requireNotNull(arguments)).balance
+        val balanceString = SendTransactionFragmentArgs.fromBundle(requireNotNull(arguments)).balance
         val balance = balanceString.split(" ")[0].toBigDecimal()
         val balanceWei = Convert.toWei(balance, Convert.Unit.ETHER).toBigInteger()
 

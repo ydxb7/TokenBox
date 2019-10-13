@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface HistoryDao {
+interface TransactionDao {
 
     @Query("select * from history_table ORDER BY timeStamp DESC")
     fun getAllHistory(): LiveData<List<DatabaseHistory>>

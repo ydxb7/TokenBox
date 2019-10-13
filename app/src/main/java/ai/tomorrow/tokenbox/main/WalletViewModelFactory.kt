@@ -1,17 +1,16 @@
 package ai.tomorrow.tokenbox.main
 
-import ai.tomorrow.tokenbox.data.HistoryDao
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class MainViewModelFactory(
+class WalletViewModelFactory(
     private val application: Application
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(application) as T
+        if (modelClass.isAssignableFrom(WalletViewModel::class.java)) {
+            return WalletViewModel(application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

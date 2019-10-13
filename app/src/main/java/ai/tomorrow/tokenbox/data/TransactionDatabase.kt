@@ -6,18 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [DatabaseHistory::class, DatabaseBalance::class], version = 2)
-abstract class HistoryDatabase : RoomDatabase() {
-    abstract val historyDao: HistoryDao
+abstract class TransactionDatabase : RoomDatabase() {
+    abstract val transactionDao: TransactionDao
 }
 
-private lateinit var INSTANCE: HistoryDatabase
+private lateinit var INSTANCE: TransactionDatabase
 
-fun getDatabase(context: Context): HistoryDatabase {
-    synchronized(HistoryDatabase::class.java) {
+fun getDatabase(context: Context): TransactionDatabase {
+    synchronized(TransactionDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(
                 context.applicationContext,
-                HistoryDatabase::class.java,
+                TransactionDatabase::class.java,
                 "history_database").fallbackToDestructiveMigration().build()
         }
     }

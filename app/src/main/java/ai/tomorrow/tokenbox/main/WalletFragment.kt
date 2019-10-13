@@ -18,15 +18,15 @@ import com.google.zxing.WriterException
 import com.journeyapps.barcodescanner.BarcodeEncoder
 
 
-class MainFragment : Fragment() {
+class WalletFragment : Fragment() {
 
-    private val TAG = "MainFragment"
+    private val TAG = "WalletFragment"
 
     private lateinit var binding: FragmentMainBinding
 
     private var currentAddress: String = ""
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: WalletViewModel
     private lateinit var adapter: HistoryRecyclerViewAdapter
 
     override fun onCreateView(
@@ -39,9 +39,9 @@ class MainFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
 
-        val viewModelFactory = MainViewModelFactory(application)
+        val viewModelFactory = WalletViewModelFactory(application)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(WalletViewModel::class.java)
 
         binding.viewModel = viewModel
 
@@ -82,20 +82,20 @@ class MainFragment : Fragment() {
         binding.addWalletBtn.setOnClickListener {
             Log.d(TAG, "addWalletBtn clicked")
             val direction =
-                MainFragmentDirections.actionMainFragmentToImportWalletFragment()
+                WalletFragmentDirections.actionMainFragmentToImportWalletFragment()
             it.findNavController().navigate(direction)
         }
 
         binding.addNewBtn.setOnClickListener {
             Log.d(TAG, "addNewBtn clicked")
             val direction =
-                MainFragmentDirections.actionMainFragmentToImportWalletFragment()
+                WalletFragmentDirections.actionMainFragmentToImportWalletFragment()
             it.findNavController().navigate(direction)
         }
 
         binding.sendBtn.setOnClickListener {
             Log.d(TAG, "sendBtn clicked")
-            val direction = MainFragmentDirections.actionMainFragmentToSendEthFragment(
+            val direction = WalletFragmentDirections.actionMainFragmentToSendEthFragment(
                 viewModel.balance.value ?: "0 ETH"
             )
             it.findNavController().navigate(direction)
