@@ -153,6 +153,7 @@
                         android:background="@drawable/grey_border_round_rectangle"
                         android:hint="0 ETH"
                         android:inputType="numberDecimal"
+                        android:maxLines="1"
                         android:padding="12dp"
                         android:textColor="@color/darkGrey"
                         android:textSize="24sp" />

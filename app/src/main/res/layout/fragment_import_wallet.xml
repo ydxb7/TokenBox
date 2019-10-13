@@ -84,8 +84,8 @@
                     android:gravity="top"
                     android:hint="Enter mnemonic phrases separated by spaces"
                     android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
-                    android:maxLines="3"
-                    android:minLines="3"
+                    android:maxLines="2"
+                    android:minLines="2"
                     android:padding="10dp" />
 
                 <EditText
@@ -96,7 +96,9 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="20dp"
                     android:ems="10"
-                    android:hint="Wallet name" />
+                    android:hint="Wallet name"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/walletPasswordEt"
@@ -126,7 +128,9 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:ems="10"
-                    android:hint="Password hint" />
+                    android:hint="Password hint"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
 
                 <Button
                     android:id="@+id/importWalletBtn"
@@ -135,6 +139,8 @@
                     android:layout_margin="20dp"
                     android:background="@drawable/blue_round_corner_rectangle"
                     android:text="Start Importing"
+                    android:maxLines="1"
+                    android:inputType="textPersonName"
                     android:textColor="@color/white" />
 
             </LinearLayout>
