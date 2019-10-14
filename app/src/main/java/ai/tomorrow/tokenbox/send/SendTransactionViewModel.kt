@@ -1,44 +1,37 @@
 package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.data.DatabaseHistory
-import ai.tomorrow.tokenbox.data.getDatabase
 import ai.tomorrow.tokenbox.datasource.WalletDataSource
+import ai.tomorrow.tokenbox.repository.TransactionRepository
+import ai.tomorrow.tokenbox.utils.Result
 import android.app.Application
 import android.os.Handler
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.navigation.findNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.web3j.crypto.RawTransaction
-import org.web3j.crypto.TransactionEncoder
-import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
-import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
-import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.sql.Timestamp
 import java.util.*
-import javax.inject.Inject
 
 
-class SendTransactionViewModel @Inject constructor(
+class SendTransactionViewModel(
     private val application: Application
 ) : ViewModel() {
 
     private val TAG = "ImportWalletViewModel"
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
-    private val database = getDatabase(application).transactionDao
-    private val walletDataSource = WalletDataSource()
+    //    private val database = getDatabase(application).transactionDao
+    private val repository = TransactionRepository(application)
 
 
     // cototine
@@ -53,6 +46,15 @@ class SendTransactionViewModel @Inject constructor(
     private val _gasPriceShow = MutableLiveData<String>()
     val gasPriceShow: LiveData<String>
         get() = _gasPriceShow
+
+    private val _navigateUp = MutableLiveData<Boolean>()
+    val navigateUp: LiveData<Boolean>
+        get() = _navigateUp
+
+    fun navagationUpDone(){
+        _navigateUp.value = false
+    }
+
 
     init {
         // get gas price
@@ -78,14 +80,23 @@ class SendTransactionViewModel @Inject constructor(
     }
 
     fun makeTransaction(
-        password: String,
-        keystorePath: String,
-        myAddress: String,
-        gasLimitBigInteger: BigInteger,
-        toAddress: String,
-        amountWei: BigInteger?,
-        it: View
+        transactionModel: WalletDataSource.TransactionModel
     ) {
+
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.sendTransaction(transactionModel) {
+                    when (it) {
+                        is Result.Success -> {
+                            displayToast("You have successfully send a transaction!")
+
+                        }
+                    }
+                }
+            }
+        }
+
+
         // sendTransaction
         uiScope.launch {
             withContext(Dispatchers.IO) {
@@ -129,40 +140,19 @@ class SendTransactionViewModel @Inject constructor(
 
     }
 
-//    private suspend fun sendTransaction(
-//        password: String,
-//        keystorePath: String,
-//        myAddress: String,
-//        gasLimitBigInteger: BigInteger,
-//        toAddress: String,
-//        amountWei: BigInteger?
-//    ): String? {
-//        Log.d(TAG, "sendTransaction: ")
-//
-//        // get transaction message
-//        val credentials = WalletUtils.loadCredentials(password, keystorePath)
-//        val ethGetTransactionCount = web3j.ethGetTransactionCount(
-//            myAddress, DefaultBlockParameterName.LATEST
-//        ).send()
-//        val nonce = ethGetTransactionCount.transactionCount
-//
-//        val rawTransaction = RawTransaction.createEtherTransaction(
-//            nonce,
-//            gasPriceWei.value,
-//            gasLimitBigInteger,
-//            toAddress,
-//            amountWei
-//        )
-//
-//        // sign
-//        val signedMessage =
-//            TransactionEncoder.signMessage(rawTransaction, credentials)
-//
-//        val hexValue = Numeric.toHexString(signedMessage)
-//        val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send()
-//
-//        val transactionHash = ethSendTransaction.transactionHash
-//        return transactionHash
-//    }
+    private fun displayToast(message: String) {
+        postOnUiThead {
+            Toast.makeText(
+                application,
+                message,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
+    private fun postOnUiThead(callback: () -> Unit) {
+        uiHandler.post {
+            callback.invoke()
+        }
+    }
 }
