@@ -21,7 +21,6 @@ import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
-import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -51,8 +50,6 @@ class SendTransactionViewModel(
     val gasPriceShow: LiveData<String>
         get() = _gasPriceShow
 
-//    var gasCount = 21000
-
     init {
         // get gas price
         uiScope.launch {
@@ -67,7 +64,11 @@ class SendTransactionViewModel(
         }
     }
 
-    fun checkValid(amountWei: BigInteger, balanceWei: BigInteger?, gasLimitBigInteger: BigInteger): Boolean{
+    fun checkValid(
+        amountWei: BigInteger,
+        balanceWei: BigInteger?,
+        gasLimitBigInteger: BigInteger
+    ): Boolean {
         val costWei = amountWei.add(requireNotNull(gasPriceWei.value).multiply(gasLimitBigInteger))
         return costWei <= balanceWei
     }
@@ -83,7 +84,7 @@ class SendTransactionViewModel(
     ) {
         // sendTransaction
         uiScope.launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 val transactionHash = sendTransaction(
                     password,
                     keystorePath,

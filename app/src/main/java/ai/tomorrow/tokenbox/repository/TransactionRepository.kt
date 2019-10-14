@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 class TransactionRepository (private val database: TransactionDatabase){
 
-    val mutex = Mutex()
+    private val mutex = Mutex()
     val histories: LiveData<List<DatabaseHistory>> = database.transactionDao.getAllHistory()
     val balance: LiveData<DatabaseBalance> = database.transactionDao.getBalance()
 
