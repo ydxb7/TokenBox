@@ -26,9 +26,10 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.sql.Timestamp
 import java.util.*
+import javax.inject.Inject
 
 
-class SendTransactionViewModel(
+class SendTransactionViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel() {
 

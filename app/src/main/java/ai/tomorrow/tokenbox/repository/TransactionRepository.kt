@@ -11,8 +11,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TransactionRepository (private val database: TransactionDatabase){
+@Singleton
+class TransactionRepository @Inject constructor (private val database: TransactionDatabase){
 
     private val mutex = Mutex()
     val histories: LiveData<List<DatabaseHistory>> = database.transactionDao.getAllHistory()

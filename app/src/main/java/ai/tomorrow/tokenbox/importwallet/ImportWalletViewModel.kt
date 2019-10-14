@@ -14,9 +14,10 @@ import org.consenlabs.tokencore.wallet.model.Metadata
 import org.consenlabs.tokencore.wallet.model.Network
 import org.consenlabs.tokencore.wallet.model.TokenException
 import java.io.File
+import javax.inject.Inject
 
 
-class ImportWalletViewModel(
+class ImportWalletViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel(), KeystoreStorage {
     override fun getKeystoreDir(): File {

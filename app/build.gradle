@@ -86,13 +86,6 @@ dependencies {
     // preference
     implementation "androidx.preference:preference-ktx:1.1.0"
 
-    // Koin AndroidX Scope features
-    implementation "org.koin:koin-androidx-scope:2.0.1"
-// Koin AndroidX ViewModel features
-    implementation "org.koin:koin-androidx-viewmodel:2.0.1"
-// Koin AndroidX Experimental features
-    implementation "org.koin:koin-androidx-ext:2.0.1"
-
     // Retrofit with Scalar Converters
     implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
     implementation "com.squareup.retrofit2:converter-scalars:$version_retrofit"
@@ -105,18 +98,18 @@ dependencies {
     // Retrofit Coroutines Support
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
 
-    // Koin AndroidX Scope features
-    implementation "org.koin:koin-androidx-scope:2.0.1"
-    // Koin AndroidX ViewModel features
-    implementation "org.koin:koin-androidx-viewmodel:2.0.1"
-    // Koin AndroidX Experimental features
-    implementation "org.koin:koin-androidx-ext:2.0.1"
-
     // zxing
     implementation 'com.journeyapps:zxing-android-embedded:4.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation('com.journeyapps:zxing-android-embedded:3.6.0') { transitive = false }
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.zxing:core:3.3.0'
+
+    // dagger
+    api 'com.google.dagger:dagger:2.22'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.22'
+    api 'com.google.dagger:dagger-android:2.22'
+    api 'com.google.dagger:dagger-android-support:2.22' // if you use the support libraries
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.22'
 }
 
