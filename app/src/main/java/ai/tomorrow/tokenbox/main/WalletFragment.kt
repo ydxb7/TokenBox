@@ -1,6 +1,5 @@
 package ai.tomorrow.tokenbox.main
 
-import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
 import android.os.Bundle
 import android.util.Log
@@ -11,11 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
-import androidx.preference.PreferenceManager
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
-import com.google.zxing.WriterException
-import com.journeyapps.barcodescanner.BarcodeEncoder
 
 
 class WalletFragment : Fragment() {
@@ -105,29 +99,12 @@ class WalletFragment : Fragment() {
         binding.depositBtn.setOnClickListener {
             Log.d(TAG, "depositBtn clicked")
 
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val myAddress = sharedPreferences.getString(
-                getString(R.string.wallet_address),
-                ""
+            val dialogFragment = QrcodeDialogFragment()
+
+            dialogFragment.show(
+                requireNotNull(fragmentManager),
+                QrcodeDialogFragment::class.simpleName
             )
-
-            try {
-                val multiFormatWriter = MultiFormatWriter()
-                val bitMatrix =
-                    multiFormatWriter.encode(myAddress, BarcodeFormat.QR_CODE, 200, 200)
-                val barcodeEncoder = BarcodeEncoder()
-                val bitmap = barcodeEncoder.createBitmap(bitMatrix)
-                val dialogFragment = QrcodeDialogFragment()
-
-                val bundle = Bundle()
-                bundle.putParcelable("qrcode", bitmap)
-
-                dialogFragment.arguments = bundle
-                dialogFragment.show(requireNotNull(fragmentManager), QrcodeDialogFragment::class.simpleName)
-
-            } catch (e: WriterException) {
-                Log.e(TAG, e.message)
-            }
         }
     }
 

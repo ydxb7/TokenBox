@@ -60,7 +60,4 @@ class TransactionRepository (private val database: TransactionDatabase){
         var balanceResponse = getBalanceDeferred.await()
         database.transactionDao.insertBalance(balanceResponse.asDatabaseModel())
     }
-
-
-
 }

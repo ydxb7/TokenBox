@@ -23,8 +23,6 @@ class ImportWalletFragment : Fragment() {
 
     private lateinit var binding: FragmentImportWalletBinding
 
-    private lateinit var identity: Identity
-
     private var toast: String? = null
 
     private lateinit var viewModel: ImportWalletViewModel
