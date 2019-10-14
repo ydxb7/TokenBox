@@ -2,6 +2,7 @@ package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.getDatabase
+import ai.tomorrow.tokenbox.datasource.WalletDataSource
 import android.app.Application
 import android.os.Handler
 import android.util.Log
@@ -37,6 +38,8 @@ class SendTransactionViewModel @Inject constructor(
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
     private val database = getDatabase(application).transactionDao
+    private val walletDataSource = WalletDataSource()
+
 
     // cototine
     private val uiScope = CoroutineScope(Dispatchers.Main)
@@ -86,13 +89,14 @@ class SendTransactionViewModel @Inject constructor(
         // sendTransaction
         uiScope.launch {
             withContext(Dispatchers.IO) {
-                val transactionHash = sendTransaction(
+                val transactionHash = walletDataSource.sendTransaction(
                     password,
                     keystorePath,
                     myAddress,
                     gasLimitBigInteger,
                     toAddress,
-                    amountWei
+                    amountWei,
+                    gasPriceWei.value
                 )
 
                 if (!transactionHash.isNullOrEmpty()) {
@@ -125,40 +129,40 @@ class SendTransactionViewModel @Inject constructor(
 
     }
 
-    private suspend fun sendTransaction(
-        password: String,
-        keystorePath: String,
-        myAddress: String,
-        gasLimitBigInteger: BigInteger,
-        toAddress: String,
-        amountWei: BigInteger?
-    ): String? {
-        Log.d(TAG, "sendTransaction: ")
-
-        // get transaction message
-        val credentials = WalletUtils.loadCredentials(password, keystorePath)
-        val ethGetTransactionCount = web3j.ethGetTransactionCount(
-            myAddress, DefaultBlockParameterName.LATEST
-        ).send()
-        val nonce = ethGetTransactionCount.transactionCount
-
-        val rawTransaction = RawTransaction.createEtherTransaction(
-            nonce,
-            gasPriceWei.value,
-            gasLimitBigInteger,
-            toAddress,
-            amountWei
-        )
-
-        // sign
-        val signedMessage =
-            TransactionEncoder.signMessage(rawTransaction, credentials)
-
-        val hexValue = Numeric.toHexString(signedMessage)
-        val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send()
-
-        val transactionHash = ethSendTransaction.transactionHash
-        return transactionHash
-    }
+//    private suspend fun sendTransaction(
+//        password: String,
+//        keystorePath: String,
+//        myAddress: String,
+//        gasLimitBigInteger: BigInteger,
+//        toAddress: String,
+//        amountWei: BigInteger?
+//    ): String? {
+//        Log.d(TAG, "sendTransaction: ")
+//
+//        // get transaction message
+//        val credentials = WalletUtils.loadCredentials(password, keystorePath)
+//        val ethGetTransactionCount = web3j.ethGetTransactionCount(
+//            myAddress, DefaultBlockParameterName.LATEST
+//        ).send()
+//        val nonce = ethGetTransactionCount.transactionCount
+//
+//        val rawTransaction = RawTransaction.createEtherTransaction(
+//            nonce,
+//            gasPriceWei.value,
+//            gasLimitBigInteger,
+//            toAddress,
+//            amountWei
+//        )
+//
+//        // sign
+//        val signedMessage =
+//            TransactionEncoder.signMessage(rawTransaction, credentials)
+//
+//        val hexValue = Numeric.toHexString(signedMessage)
+//        val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send()
+//
+//        val transactionHash = ethSendTransaction.transactionHash
+//        return transactionHash
+//    }
 
 }
