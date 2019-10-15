@@ -20,25 +20,13 @@ import java.math.BigInteger
 import java.sql.Timestamp
 import java.util.*
 
-class Web3jDatasource (application: Application){
+class Web3jDatasource(application: Application) {
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
     val database = getDatabase(application).transactionDao
-//
-//    data class TransactionModel(
-//        val password: String,
-//        val keystorePath: String,
-//        val myAddress: String,
-//        val gasLimitBigInteger: BigInteger,
-//        val toAddress: String,
-//        val amountWei: BigInteger,
-//        val gasPriceWei: BigInteger
-//    )
-
-
 
     suspend fun getGasPrice(callback: (Result<BigInteger, Exception>) -> Unit) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             try {
                 val gasPrice = web3j.ethGasPrice().send().gasPrice
                 callback.invoke(Result.Success(gasPrice))
@@ -56,7 +44,7 @@ class Web3jDatasource (application: Application){
         amountWei: BigInteger,
         callback: (Result<String, Exception>) -> Unit
     ) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             // get transaction message
             val credentials =
                 WalletUtils.loadCredentials(wallet.password, wallet.keystorePath)
@@ -85,8 +73,10 @@ class Web3jDatasource (application: Application){
             try {
                 if (!transactionHash.isNullOrEmpty()) {
                     callback.invoke(Result.Success(transactionHash.toString()))
-                    insertPendingTransaction(wallet.address, toAddress,
-                        amountWei.toString(), transactionHash)
+                    insertPendingTransaction(
+                        wallet.address, toAddress,
+                        amountWei.toString(), transactionHash
+                    )
                 } else {
                     callback.invoke(Result.Failure(IllegalStateException("transaction hash is null or empty")))
                 }

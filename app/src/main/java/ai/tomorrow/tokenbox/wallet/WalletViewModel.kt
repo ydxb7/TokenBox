@@ -15,12 +15,11 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
 import java.math.BigDecimal
-import javax.inject.Inject
 
 const val UPDATE_FREQUENCY = 5000L
 const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
-class WalletViewModel @Inject constructor(
+class WalletViewModel(
     private val application: Application
 ) : ViewModel() {
 
@@ -76,11 +75,11 @@ class WalletViewModel @Inject constructor(
     // LiveData histories
     val databaseHistories = transactionRepository.histories
 
-    val balance: LiveData<String> = Transformations.map(transactionRepository.balance){
-        if (it != null){
+    val balance: LiveData<String> = Transformations.map(transactionRepository.balance) {
+        if (it != null) {
             val ether = Convert.fromWei(BigDecimal(it.balance), Convert.Unit.ETHER).toFloat()
             "$ether ETH"
-        } else{
+        } else {
             ""
         }
     }
