@@ -71,7 +71,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
-
+    implementation "com.android.support:support-compat:29.0.0"
 
     // web3j
     implementation 'org.web3j:core:4.1.0-android'
@@ -108,5 +108,8 @@ dependencies {
     // koin
     implementation "org.koin:koin-android-viewmodel:2.0.1"
     implementation 'org.koin:koin-android:2.0.1'
+
+    // WorkManager
+//    implementation "android.arch.work:work-runtime-ktx:$version_work"
 }
 

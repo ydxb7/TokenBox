@@ -13,7 +13,7 @@ class TransactionRepository(val transactionDatasource: TransactionDatasource) {
 
     val histories = transactionDatasource.histories
     val balance = transactionDatasource.balance
-
+    fun getHistory(rowId: Long) = transactionDatasource.getHistory(rowId)
 
     suspend fun refreshDb(address: String) {
         withContext(Dispatchers.IO) {
@@ -36,5 +36,16 @@ class TransactionRepository(val transactionDatasource: TransactionDatasource) {
 
         transactionDatasource.insertHistoryToDatabase(history.asDatabaseModel(address))
         transactionDatasource.insertBalanceToDb(balanceString)
+    }
+
+    suspend fun newTransaction(address: String): List<Long> {
+        val history = transactionDatasource.fetchTransactionHistoryFromWeb(address)
+
+        val newIds =
+            transactionDatasource.insertNewToDatabase(history.asDatabaseModel(address)).filter {
+                it != -1L
+            }
+
+        return newIds
     }
 }
