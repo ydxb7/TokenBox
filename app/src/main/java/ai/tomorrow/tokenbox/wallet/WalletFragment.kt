@@ -1,7 +1,6 @@
 package ai.tomorrow.tokenbox.wallet
 
 import ai.tomorrow.tokenbox.databinding.FragmentWalletBinding
-import ai.tomorrow.tokenbox.work.GetNewTransactionWorker
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -42,13 +41,6 @@ class WalletFragment : Fragment() {
         setupWidgets()
 
         setupLiveData()
-
-        // delete
-        binding.testNotification.setOnClickListener {
-            GetNewTransactionWorker.sendNotification(requireContext())
-        }
-
-
 
         return binding.root
     }

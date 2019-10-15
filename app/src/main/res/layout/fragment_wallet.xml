@@ -38,13 +38,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <ImageView
-                            android:id="@+id/testNotification"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:tint="@color/white"
-                            android:src="@drawable/notification_icon" />
-
                         <TextView
                             android:id="@+id/walletNameTv"
                             style="@style/header_text"

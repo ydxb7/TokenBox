@@ -16,6 +16,8 @@ class TransactionDatasource(val application: Application) {
     val histories: LiveData<List<DatabaseHistory>> = database.getAllHistory()
     val balance: LiveData<DatabaseBalance> = database.getBalance()
 
+    fun getHistory(rowId: Long) = database.getHistory(rowId)
+
     fun insertNewToDatabase(histories: Array<DatabaseHistory>): List<Long> {
         val ids = database.insertNew(*histories)
         return ids

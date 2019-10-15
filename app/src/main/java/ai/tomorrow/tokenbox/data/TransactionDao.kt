@@ -18,6 +18,9 @@ interface TransactionDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertNew(vararg histories: DatabaseHistory): List<Long>
 
+    @Query("select * from history_table WHERE rowId = :rowId")
+    fun getHistory(rowId: Long): DatabaseHistory
+
     @Query("DELETE FROM history_table")
     suspend fun clear()
 

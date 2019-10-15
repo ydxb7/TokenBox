@@ -16,10 +16,44 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import org.web3j.utils.Convert
 import retrofit2.HttpException
+import java.math.BigDecimal
 
 class GetNewTransactionWorker(val appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params), KoinComponent {
+    
+    val transactionRepository: TransactionRepository by inject()
+    val walletRepository: WalletRepository by inject()
+
+    var currentWallet = walletRepository.getWalletFromPreference()
+
+    override suspend fun doWork(): Result {
+        return try {
+            val newWallet = walletRepository.getWalletFromPreference()
+            if (currentWallet == newWallet) {
+                val newIds = transactionRepository.newTransaction(currentWallet.address)
+                if (newIds.size > 0) {
+                    var notificationBody = ""
+                    for (rowId in newIds) {
+                        val history = transactionRepository.getHistory(rowId)
+                        val ether =
+                            Convert.fromWei(BigDecimal(history.value), Convert.Unit.ETHER).toFloat()
+
+                        notificationBody += "${history.from} send you $ether ETH \n"
+                    }
+                    sendNotification(appContext, notificationBody)
+                }
+
+                Log.d(WORK_NAME, "XXX newIds = $newIds")
+            } else {
+                currentWallet = newWallet
+            }
+            Result.success()
+        } catch (exception: HttpException) {
+            Result.failure()
+        }
+    }
 
     companion object {
         const val WORK_NAME = "GetNewTransactionWorker"
@@ -28,7 +62,7 @@ class GetNewTransactionWorker(val appContext: Context, params: WorkerParameters)
         private val NOTIFICATION_CHANNEL_ID = "reminder_notification_channel"
         private val NOTIFICATION_ID = 1138
 
-        fun sendNotification(context: Context) {
+        fun sendNotification(context: Context, notificationBody: String) {
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -41,8 +75,8 @@ class GetNewTransactionWorker(val appContext: Context, params: WorkerParameters)
             }
             val notificationBuilder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
+                .setContentTitle("You have an income")
+                .setContentText(notificationBody)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(contentIntent(context))
@@ -65,29 +99,4 @@ class GetNewTransactionWorker(val appContext: Context, params: WorkerParameters)
             )
         }
     }
-
-    val transactionRepository: TransactionRepository by inject()
-    val walletRepository: WalletRepository by inject()
-
-    var currentWallet = walletRepository.getWalletFromPreference()
-
-
-    override suspend fun doWork(): Result {
-        return try {
-            val newWallet = walletRepository.getWalletFromPreference()
-            if (currentWallet == newWallet) {
-                val newIds = transactionRepository.newTransaction(currentWallet.address)
-                // TODO 弹出通知
-
-                Log.d(WORK_NAME, "XXX newIds = $newIds")
-            } else {
-                currentWallet = newWallet
-            }
-            Result.success()
-        } catch (exception: HttpException) {
-            Result.failure()
-        }
-    }
-
-
 }

@@ -13,6 +13,7 @@ class TransactionRepository(val transactionDatasource: TransactionDatasource) {
 
     val histories = transactionDatasource.histories
     val balance = transactionDatasource.balance
+    fun getHistory(rowId: Long) = transactionDatasource.getHistory(rowId)
 
     suspend fun refreshDb(address: String) {
         withContext(Dispatchers.IO) {
