@@ -1,15 +1,12 @@
 package ai.tomorrow.tokenbox.repository
 
-import ai.tomorrow.tokenbox.data.ResultResponse
 import ai.tomorrow.tokenbox.data.Wallet
 import ai.tomorrow.tokenbox.datasource.WalletDatasource
 import ai.tomorrow.tokenbox.utils.Result
-import android.app.Application
-import android.widget.Toast
 
-class WalletRepository(val application: Application) {
+class WalletRepository(val walletDatasource: WalletDatasource) {
 
-    val walletDatasource = WalletDatasource(application)
+//    val walletDatasource = WalletDatasource(application)
 
     fun getWalletFromPreference(): Wallet = walletDatasource.getWalletFromPreference()
     fun saveWalletInPreference(wallet: Wallet) = walletDatasource.saveWalletInPreference(wallet)
@@ -19,9 +16,15 @@ class WalletRepository(val application: Application) {
         name: String,
         callback: (Result<String, Exception>) -> Unit
     ) {
-        val wallet = walletDatasource.createWalletFromMnemonic(mnemonic, password, passwordHint, name, callback)
+        val wallet = walletDatasource.createWalletFromMnemonic(
+            mnemonic,
+            password,
+            passwordHint,
+            name,
+            callback
+        )
 
-        if (wallet != null){
+        if (wallet != null) {
             walletDatasource.saveWalletInPreference(wallet)
         }
     }

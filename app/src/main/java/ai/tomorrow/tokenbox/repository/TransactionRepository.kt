@@ -2,29 +2,28 @@ package ai.tomorrow.tokenbox.repository
 
 import ai.tomorrow.tokenbox.data.asDatabaseModel
 import ai.tomorrow.tokenbox.datasource.TransactionDatasource
-import android.app.Application
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-class TransactionRepository(val application: Application) {
+class TransactionRepository(val transactionDatasource: TransactionDatasource) {
 
-    val transactionDatasource = TransactionDatasource(application)
+    //    val transactionDatasource = TransactionDatasource(application)
     private val mutex = Mutex()
 
     val histories = transactionDatasource.histories
     val balance = transactionDatasource.balance
 
 
-    suspend fun refreshDb(address: String){
-        withContext(Dispatchers.IO){
+    suspend fun refreshDb(address: String) {
+        withContext(Dispatchers.IO) {
             refresh(address)
         }
     }
 
     suspend fun resetDbWithNewAddress(address: String) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             mutex.withLock {
                 transactionDatasource.clearHistoryData()
                 refreshDb(address)

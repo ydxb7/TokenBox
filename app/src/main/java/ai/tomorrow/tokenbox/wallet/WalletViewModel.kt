@@ -11,6 +11,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Convert
@@ -21,13 +23,13 @@ const val API_KEY_TOKEN = "ZBE4XGYMYQ1R164QY3VY4S5TFFGHRYNEEI"
 
 class WalletViewModel(
     private val application: Application
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
 
     private val TAG = "WalletViewModel"
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
-    private val walletRepository = WalletRepository(application)
-    private val transactionRepository = TransactionRepository(application)
+    private val walletRepository: WalletRepository by inject()
+    private val transactionRepository: TransactionRepository by inject()
 
     // coroutine
     private var viewModelJob = Job()

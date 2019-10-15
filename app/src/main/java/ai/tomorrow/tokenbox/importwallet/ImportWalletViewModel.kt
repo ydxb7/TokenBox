@@ -8,19 +8,21 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import org.consenlabs.tokencore.wallet.KeystoreStorage
 import org.consenlabs.tokencore.wallet.WalletManager
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.io.File
 
 
 class ImportWalletViewModel(
     private val application: Application
-) : ViewModel(), KeystoreStorage {
+) : ViewModel(), KeystoreStorage, KoinComponent {
     override fun getKeystoreDir(): File {
         return application.filesDir
     }
 
     private val TAG = "ImportWalletViewModel"
 
-    val walletRepository = WalletRepository(application)
+    val walletRepository: WalletRepository by inject()
 
     init {
         // tokenCore

@@ -1,6 +1,5 @@
 package ai.tomorrow.tokenbox.send
 
-import ai.tomorrow.tokenbox.repository.TransactionRepository
 import ai.tomorrow.tokenbox.repository.WalletRepository
 import ai.tomorrow.tokenbox.repository.Web3jRepository
 import ai.tomorrow.tokenbox.utils.Result
@@ -14,6 +13,8 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import java.math.BigDecimal
@@ -22,15 +23,15 @@ import java.math.BigInteger
 
 class SendTransactionViewModel(
     private val application: Application
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
 
     private val TAG = "ImportWalletViewModel"
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
     //    private val database = getDatabase(application).transactionDao
-    private val transactionRepository = TransactionRepository(application)
-    private val web3jRepository = Web3jRepository(application)
-    private val walletRepository = WalletRepository(application)
+//    private val transactionRepository : TransactionRepository by inject()
+    private val web3jRepository: Web3jRepository by inject()
+    private val walletRepository: WalletRepository by inject()
 
 
     // cototine

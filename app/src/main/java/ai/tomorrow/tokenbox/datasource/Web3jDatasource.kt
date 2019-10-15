@@ -89,7 +89,7 @@ class Web3jDatasource(application: Application) {
     private fun insertPendingTransaction(
         myAddress: String, toAddress: String, amountWei: String, hash: String
     ) {
-        val currentTimestamp = Timestamp(Date().time).time
+        val currentTimestamp = Timestamp(Date().time).time / 1000
 
         val pendingHistory = DatabaseHistory(
             0L, currentTimestamp, hash, 0L, "", 0,
