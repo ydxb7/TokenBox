@@ -2,7 +2,7 @@ package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.databinding.FragmentSendEthBinding
-import ai.tomorrow.tokenbox.datasource.WalletDataSource
+import ai.tomorrow.tokenbox.datasource.Web3jDatasource
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -120,17 +120,17 @@ class SendTransactionFragment : Fragment() {
                     .show()
             } else {
 
-                val transactionModel = WalletDataSource.TransactionModel(
-                    password,
-                    keystorePath,
-                    myAddress,
-                    gasLimitBigInteger,
-                    toAddress,
-                    amountWei,
-                    BigInteger.ZERO
-                )
+//                val transactionModel = Web3jDatasource.TransactionModel(
+//                    password,
+//                    keystorePath,
+//                    myAddress,
+//                    gasLimitBigInteger,
+//                    toAddress,
+//                    amountWei,
+//                    null
+//                )
 
-                viewModel.makeTransaction(transactionModel)
+                viewModel.makeTransaction(toAddress, gasLimitBigInteger, amountWei)
             }
         }
 

@@ -1,8 +1,10 @@
 package ai.tomorrow.tokenbox.send
 
-import ai.tomorrow.tokenbox.data.DatabaseHistory
-import ai.tomorrow.tokenbox.datasource.WalletDataSource
+import ai.tomorrow.tokenbox.data.Wallet
+import ai.tomorrow.tokenbox.datasource.Web3jDatasource
 import ai.tomorrow.tokenbox.repository.TransactionRepository
+import ai.tomorrow.tokenbox.repository.WalletRepository
+import ai.tomorrow.tokenbox.repository.Web3jRepository
 import ai.tomorrow.tokenbox.utils.Result
 import android.app.Application
 import android.os.Handler
@@ -19,8 +21,6 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.sql.Timestamp
-import java.util.*
 
 
 class SendTransactionViewModel(
@@ -31,7 +31,9 @@ class SendTransactionViewModel(
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
     //    private val database = getDatabase(application).transactionDao
-    private val repository = TransactionRepository(application)
+    private val transactionRepository = TransactionRepository(application)
+    private val web3jRepository = Web3jRepository(application)
+    private val walletRepository = WalletRepository(application)
 
 
     // cototine
@@ -51,10 +53,11 @@ class SendTransactionViewModel(
     val navigateUp: LiveData<Boolean>
         get() = _navigateUp
 
-    fun navagationUpDone(){
+    fun navagationUpDone() {
         _navigateUp.value = false
     }
 
+    val wallet = walletRepository.getWalletFromPreference()
 
     init {
         // get gas price
@@ -68,6 +71,9 @@ class SendTransactionViewModel(
                 }
             }
         }
+
+
+
     }
 
     fun checkValid(
@@ -80,22 +86,30 @@ class SendTransactionViewModel(
     }
 
     fun makeTransaction(
-        transactionModel: WalletDataSource.TransactionModel
-    ) {
+        toAddress: String,
+        gasLimitBigInteger: BigInteger,
+        amountWei: BigInteger
+        ) {
 
-        uiScope.launch {
-            withContext(Dispatchers.IO) {
-                repository.sendTransaction(transactionModel) {
+        try {
+            uiScope.launch {
+                web3jRepository.sendTransaction(wallet, toAddress, requireNotNull(gasPriceWei.value),
+                    gasLimitBigInteger, amountWei) {
                     when (it) {
                         is Result.Success -> {
                             displayToast("You have successfully send a transaction!")
-                            _navigateUp.value = true
+                            postOnUiThead {
+                                _navigateUp.value = true
+                            }
                         }
                         is Result.Failure -> displayToast("Transaction failed!")
                     }
                 }
             }
+        } catch (e: Exception){
+            Log.e(TAG, e.message)
         }
+
     }
 
     private fun displayToast(message: String) {

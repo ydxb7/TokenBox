@@ -1,8 +1,7 @@
 package ai.tomorrow.tokenbox.main
 
-import ai.tomorrow.tokenbox.R
-import ai.tomorrow.tokenbox.data.getDatabase
 import ai.tomorrow.tokenbox.repository.TransactionRepository
+import ai.tomorrow.tokenbox.repository.WalletRepository
 import android.app.Application
 import android.os.Handler
 import android.os.HandlerThread
@@ -11,7 +10,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
@@ -29,6 +27,8 @@ class WalletViewModel @Inject constructor(
     private val TAG = "WalletViewModel"
 
     private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
+    private val walletRepository = WalletRepository(application)
+    private val transactionRepository = TransactionRepository(application)
 
     // coroutine
     private var viewModelJob = Job()
@@ -47,7 +47,8 @@ class WalletViewModel @Inject constructor(
         !currentAddress.value.isNullOrBlank()
     }
 
-    private val repository = TransactionRepository(application)
+
+//    private val repository = delete_TransactionRepository(application)
 
     // poll data
     private var uiHandler = Handler()
@@ -65,11 +66,7 @@ class WalletViewModel @Inject constructor(
         Log.d(TAG, "init")
         getCurrentWallet()
 
-        if (!currentAddress.value.isNullOrEmpty()){
-            uiScope.launch {
-                repository.refreshAll(requireNotNull(currentAddress.value))
-            }
-        }
+        refreshAll()
 
         backgroundThread = HandlerThread("backgroundHandler")
         backgroundThread.start()
@@ -77,9 +74,9 @@ class WalletViewModel @Inject constructor(
     }
 
     // LiveData histories
-    val databaseHistories = repository.histories
+    val databaseHistories = transactionRepository.histories
 
-    val balance: LiveData<String> = Transformations.map(repository.balance){
+    val balance: LiveData<String> = Transformations.map(transactionRepository.balance){
         if (it != null){
             val ether = Convert.fromWei(BigDecimal(it.balance), Convert.Unit.ETHER).toFloat()
             "$ether ETH"
@@ -97,7 +94,7 @@ class WalletViewModel @Inject constructor(
         val address = _currentAddress.value
         if (address.isNullOrEmpty()) return
         uiScope.launch {
-            repository.resetData(address)
+            transactionRepository.resetDbWithNewAddress(address)
         }
     }
 
@@ -107,17 +104,16 @@ class WalletViewModel @Inject constructor(
         if (address.isNullOrEmpty()) return
 
         uiScope.launch {
-            repository.refreshAll(address)
+            transactionRepository.refreshDb(address)
         }
     }
 
     fun getCurrentWallet() {
         Log.d(TAG, "getCurrentWallet and update LiveData _currentAddress")
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-        _currentAddress.value =
-            sharedPreferences.getString(application.getString(R.string.wallet_address), "")
-        _currentWalletName.value =
-            sharedPreferences.getString(application.getString(R.string.wallet_name), "")
+        val wallet = walletRepository.getWalletFromPreference()
+
+        _currentAddress.value = wallet.address
+        _currentWalletName.value = wallet.name
 
         Log.d(TAG, "_currentAddress.value = ${_currentAddress.value}")
     }
