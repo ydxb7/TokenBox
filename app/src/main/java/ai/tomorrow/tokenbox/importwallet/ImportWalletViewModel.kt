@@ -29,8 +29,7 @@ class ImportWalletViewModel(
         WalletManager.storage = this
         WalletManager.scanWallets()
     }
-
-
+    
     /**
      * generate wallet from mnemonic
      */

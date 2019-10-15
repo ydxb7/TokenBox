@@ -49,8 +49,6 @@ class WalletViewModel(
     }
 
 
-//    private val repository = delete_TransactionRepository(application)
-
     // poll data
     private var uiHandler = Handler()
     private lateinit var backgroundHandler: Handler

@@ -13,7 +13,6 @@ import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.dialog_fragment_qr.view.*
 
 class QrcodeDialogFragment : DialogFragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -9,7 +9,6 @@ import kotlinx.coroutines.withContext
 
 class TransactionRepository(val transactionDatasource: TransactionDatasource) {
 
-    //    val transactionDatasource = TransactionDatasource(application)
     private val mutex = Mutex()
 
     val histories = transactionDatasource.histories
@@ -38,5 +37,4 @@ class TransactionRepository(val transactionDatasource: TransactionDatasource) {
         transactionDatasource.insertHistoryToDatabase(history.asDatabaseModel(address))
         transactionDatasource.insertBalanceToDb(balanceString)
     }
-
 }

@@ -7,8 +7,6 @@ import java.math.BigInteger
 
 class Web3jRepository(val web3jDatasource: Web3jDatasource) {
 
-//    val web3jDatasource = Web3jDatasource(application)
-
     suspend fun getGasPrice(callback: (Result<BigInteger, Exception>) -> Unit) =
         web3jDatasource.getGasPrice(callback)
 

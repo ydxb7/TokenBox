@@ -13,12 +13,6 @@ import retrofit2.http.Query
 
 private const val BASE_URL = "http://api-ropsten.etherscan.io/"
 
-//private val retrofit = Retrofit.Builder()
-//    .addConverterFactory(ScalarsConverterFactory.create())
-//    .addCallAdapterFactory(CoroutineCallAdapterFactory())
-//    .baseUrl(BASE_URL)
-//    .build()
-
 /**
  * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
  * full Kotlin compatibility.
@@ -37,33 +31,34 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-
 interface EtherscanApiService {
 
     @GET("api")
-    fun getHistory(@Query("module") module: String,
-                   @Query("action") action: String,
-                   @Query("address") address: String,
-                   @Query("startblock") startblock: Long,
-                   @Query("endblock") endblock: Long,
-                   @Query("sort") sort: String,
-                   @Query("apikey") apikey: String
+    fun getHistory(
+        @Query("module") module: String,
+        @Query("action") action: String,
+        @Query("address") address: String,
+        @Query("startblock") startblock: Long,
+        @Query("endblock") endblock: Long,
+        @Query("sort") sort: String,
+        @Query("apikey") apikey: String
     ):
-            Deferred<ResultResponse>
+        Deferred<ResultResponse>
 
     @GET("api")
-    fun getBalance(@Query("module") module: String,
-                   @Query("action") action: String,
-                   @Query("address") address: String,
-                   @Query("tag") tag: String,
-                   @Query("apikey") apikey: String
+    fun getBalance(
+        @Query("module") module: String,
+        @Query("action") action: String,
+        @Query("address") address: String,
+        @Query("tag") tag: String,
+        @Query("apikey") apikey: String
     ):
-            Deferred<BalanceResponse>
+        Deferred<BalanceResponse>
 }
 
 /**
  * A public Api object that exposes the lazy-initialized Retrofit service
  */
 object EtherscanApi {
-    val retrofitService : EtherscanApiService by lazy { retrofit.create(EtherscanApiService::class.java) }
+    val retrofitService: EtherscanApiService by lazy { retrofit.create(EtherscanApiService::class.java) }
 }

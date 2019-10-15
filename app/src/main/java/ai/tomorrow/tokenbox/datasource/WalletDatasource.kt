@@ -1,16 +1,10 @@
 package ai.tomorrow.tokenbox.datasource
 
 import ai.tomorrow.tokenbox.R
-import ai.tomorrow.tokenbox.data.DatabaseBalance
-import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.Wallet
-import ai.tomorrow.tokenbox.data.getDatabase
 import ai.tomorrow.tokenbox.utils.Result
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import androidx.core.content.edit
-import androidx.lifecycle.LiveData
 import androidx.preference.PreferenceManager
 import org.consenlabs.tokencore.wallet.Identity
 import org.consenlabs.tokencore.wallet.WalletManager
@@ -18,7 +12,7 @@ import org.consenlabs.tokencore.wallet.model.Metadata
 import org.consenlabs.tokencore.wallet.model.Network
 import org.consenlabs.tokencore.wallet.model.TokenException
 
-class WalletDatasource(val application: Application){
+class WalletDatasource(val application: Application) {
 
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     /**
@@ -38,16 +32,19 @@ class WalletDatasource(val application: Application){
         }
     }
 
-    fun getWalletFromPreference(): Wallet{
+    fun getWalletFromPreference(): Wallet {
         return Wallet(
-            sharedPreferences.getString(application.getString(R.string.wallet_address), "")?:"",
-            sharedPreferences.getString(application.getString(R.string.wallet_name), "")?:"",
-            sharedPreferences.getString(application.getString(R.string.wallet_password), "")?:"",
-            sharedPreferences.getString(application.getString(R.string.wallet_password_hint), "")?:"",
-            sharedPreferences.getString(application.getString(R.string.wallet_keystore), "")?:"",
-            sharedPreferences.getString(application.getString(R.string.wallet_keystore_path), "")?:"",
-            sharedPreferences.getString(application.getString(R.string.wallet_mnemonic), "")?:"",
-            sharedPreferences.getString(application.getString(R.string.wallet_private_key), "")?:""
+            sharedPreferences.getString(application.getString(R.string.wallet_address), "") ?: "",
+            sharedPreferences.getString(application.getString(R.string.wallet_name), "") ?: "",
+            sharedPreferences.getString(application.getString(R.string.wallet_password), "") ?: "",
+            sharedPreferences.getString(application.getString(R.string.wallet_password_hint), "")
+                ?: "",
+            sharedPreferences.getString(application.getString(R.string.wallet_keystore), "") ?: "",
+            sharedPreferences.getString(application.getString(R.string.wallet_keystore_path), "")
+                ?: "",
+            sharedPreferences.getString(application.getString(R.string.wallet_mnemonic), "") ?: "",
+            sharedPreferences.getString(application.getString(R.string.wallet_private_key), "")
+                ?: ""
         )
     }
 
@@ -70,7 +67,6 @@ class WalletDatasource(val application: Application){
             )
         } catch (e: TokenException) {
             callback.invoke(Result.Failure(e))
-//            Toast.makeText(application, "mnemonic word invalid", Toast.LENGTH_SHORT).show()
             return null
         }
 

@@ -81,7 +81,6 @@ class ImportWalletFragment : Fragment() {
         return true
     }
 
-
     //------------------------ QR code ------------------------------
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

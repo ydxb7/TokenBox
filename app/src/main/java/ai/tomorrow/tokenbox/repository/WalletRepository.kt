@@ -6,8 +6,6 @@ import ai.tomorrow.tokenbox.utils.Result
 
 class WalletRepository(val walletDatasource: WalletDatasource) {
 
-//    val walletDatasource = WalletDatasource(application)
-
     fun getWalletFromPreference(): Wallet = walletDatasource.getWalletFromPreference()
     fun saveWalletInPreference(wallet: Wallet) = walletDatasource.saveWalletInPreference(wallet)
 

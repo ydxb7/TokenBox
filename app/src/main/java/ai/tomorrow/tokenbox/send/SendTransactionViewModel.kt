@@ -15,8 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.web3j.protocol.Web3j
-import org.web3j.protocol.http.HttpService
 import java.math.BigDecimal
 import java.math.BigInteger
 
@@ -27,12 +25,8 @@ class SendTransactionViewModel(
 
     private val TAG = "ImportWalletViewModel"
 
-    private val web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk"))
-    //    private val database = getDatabase(application).transactionDao
-//    private val transactionRepository : TransactionRepository by inject()
     private val web3jRepository: Web3jRepository by inject()
     private val walletRepository: WalletRepository by inject()
-
 
     // cototine
     private val uiScope = CoroutineScope(Dispatchers.Main)

@@ -16,7 +16,6 @@ enum class Direction {
     IN, OUT, SELF
 }
 
-
 class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
     RecyclerView.Adapter<HistoryRecyclerViewAdapter.ViewHolder>() {
 
@@ -108,7 +107,7 @@ class HistoryRecyclerViewAdapter(private var myData: List<DatabaseHistory>) :
                         }
                     }
 
-                    if (history.isError == 2){
+                    if (history.isError == 2) {
                         pendingLo.visibility = View.VISIBLE
                     }
                 }
