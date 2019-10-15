@@ -4,12 +4,10 @@ import ai.tomorrow.tokenbox.data.DatabaseBalance
 import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.data.NetworkHistory
 import ai.tomorrow.tokenbox.data.getDatabase
-import ai.tomorrow.tokenbox.main.API_KEY_TOKEN
+import ai.tomorrow.tokenbox.wallet.API_KEY_TOKEN
 import ai.tomorrow.tokenbox.network.EtherscanApi
 import android.app.Application
 import androidx.lifecycle.LiveData
-import java.sql.Timestamp
-import java.util.*
 
 class TransactionDatasource(val application: Application) {
 

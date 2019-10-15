@@ -1,4 +1,4 @@
-package ai.tomorrow.tokenbox.main
+package ai.tomorrow.tokenbox.wallet
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

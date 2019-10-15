@@ -1,4 +1,4 @@
-package ai.tomorrow.tokenbox.main
+package ai.tomorrow.tokenbox.wallet
 
 import ai.tomorrow.tokenbox.data.DatabaseHistory
 import ai.tomorrow.tokenbox.databinding.ListItemHistoryBinding

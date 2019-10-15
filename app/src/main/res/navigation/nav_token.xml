@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="ai.tomorrow.tokenbox.main.WalletFragment"
+        android:name="ai.tomorrow.tokenbox.wallet.WalletFragment"
         android:label="MianFragment" >
         <action
             android:id="@+id/action_mainFragment_to_sendEthFragment"

@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="ai.tomorrow.tokenbox.main.WalletViewModel" />
+            type="ai.tomorrow.tokenbox.wallet.WalletViewModel" />
     </data>
 
 

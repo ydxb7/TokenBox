@@ -1,4 +1,4 @@
-package ai.tomorrow.tokenbox.main
+package ai.tomorrow.tokenbox.wallet
 
 import ai.tomorrow.tokenbox.repository.TransactionRepository
 import ai.tomorrow.tokenbox.repository.WalletRepository

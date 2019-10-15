@@ -1,6 +1,5 @@
 package ai.tomorrow.tokenbox.importwallet
 
-import ai.tomorrow.tokenbox.main.WalletViewModel
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

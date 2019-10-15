@@ -1,7 +1,5 @@
 package ai.tomorrow.tokenbox.send
 
-import ai.tomorrow.tokenbox.data.Wallet
-import ai.tomorrow.tokenbox.datasource.Web3jDatasource
 import ai.tomorrow.tokenbox.repository.TransactionRepository
 import ai.tomorrow.tokenbox.repository.WalletRepository
 import ai.tomorrow.tokenbox.repository.Web3jRepository
@@ -16,7 +14,6 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import java.math.BigDecimal
@@ -62,18 +59,24 @@ class SendTransactionViewModel(
     init {
         // get gas price
         uiScope.launch {
-            withContext(Dispatchers.IO) {
-                val temp = web3j.ethGasPrice().send().gasPrice
-                uiHandler.post {
-                    _gasPriceWei.value = temp
-                    _gasPriceShow.value =
-                        "${temp.toBigDecimal().divide(BigDecimal("1000000000"))} GWEI"
+
+            web3jRepository.getGasPrice {
+                when (it) {
+                    is Result.Success -> {
+                        postOnUiThead {
+                            _gasPriceWei.value = it.value
+                            _gasPriceShow.value =
+                                "${it.value.toBigDecimal().divide(BigDecimal("1000000000"))} GWEI"
+                        }
+                    }
+                    is Result.Failure -> {
+                        postOnUiThead {
+                            displayToast("Failed to get gas price.")
+                        }
+                    }
                 }
             }
         }
-
-
-
     }
 
     fun checkValid(
@@ -89,12 +92,14 @@ class SendTransactionViewModel(
         toAddress: String,
         gasLimitBigInteger: BigInteger,
         amountWei: BigInteger
-        ) {
+    ) {
 
         try {
             uiScope.launch {
-                web3jRepository.sendTransaction(wallet, toAddress, requireNotNull(gasPriceWei.value),
-                    gasLimitBigInteger, amountWei) {
+                web3jRepository.sendTransaction(
+                    wallet, toAddress, requireNotNull(gasPriceWei.value),
+                    gasLimitBigInteger, amountWei
+                ) {
                     when (it) {
                         is Result.Success -> {
                             displayToast("You have successfully send a transaction!")
@@ -106,10 +111,9 @@ class SendTransactionViewModel(
                     }
                 }
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e(TAG, e.message)
         }
-
     }
 
     private fun displayToast(message: String) {

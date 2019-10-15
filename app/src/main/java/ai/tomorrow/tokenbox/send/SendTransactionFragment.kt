@@ -119,17 +119,6 @@ class SendTransactionFragment : Fragment() {
                 Toast.makeText(context, "Insufficient balance", Toast.LENGTH_SHORT)
                     .show()
             } else {
-
-//                val transactionModel = Web3jDatasource.TransactionModel(
-//                    password,
-//                    keystorePath,
-//                    myAddress,
-//                    gasLimitBigInteger,
-//                    toAddress,
-//                    amountWei,
-//                    null
-//                )
-
                 viewModel.makeTransaction(toAddress, gasLimitBigInteger, amountWei)
             }
         }

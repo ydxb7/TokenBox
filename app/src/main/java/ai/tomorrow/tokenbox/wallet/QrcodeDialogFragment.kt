@@ -1,8 +1,7 @@
-package ai.tomorrow.tokenbox.main
+package ai.tomorrow.tokenbox.wallet
 
 import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.utils.createBitmapByAddress
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

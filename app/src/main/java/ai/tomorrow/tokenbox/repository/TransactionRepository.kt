@@ -17,7 +17,6 @@ class TransactionRepository(val application: Application) {
     val balance = transactionDatasource.balance
 
 
-
     suspend fun refreshDb(address: String){
         withContext(Dispatchers.IO){
             refresh(address)

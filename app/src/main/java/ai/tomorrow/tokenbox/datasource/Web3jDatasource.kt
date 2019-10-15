@@ -42,7 +42,6 @@ class Web3jDatasource (application: Application){
             try {
                 val gasPrice = web3j.ethGasPrice().send().gasPrice
                 callback.invoke(Result.Success(gasPrice))
-
             } catch (e: IOException) {
                 callback.invoke(Result.Failure(e))
             }
