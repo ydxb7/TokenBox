@@ -1,6 +1,6 @@
 package ai.tomorrow.tokenbox.wallet
 
-import ai.tomorrow.tokenbox.databinding.FragmentMainBinding
+import ai.tomorrow.tokenbox.databinding.FragmentWalletBinding
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +16,7 @@ class WalletFragment : Fragment() {
 
     private val TAG = "WalletFragment"
 
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentWalletBinding
 
     private var currentAddress: String = ""
 
@@ -29,7 +29,7 @@ class WalletFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "onCreateView")
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentWalletBinding.inflate(inflater, container, false)
 
         val application = requireNotNull(this.activity).application
 
