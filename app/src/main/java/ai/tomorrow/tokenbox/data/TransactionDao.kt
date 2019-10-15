@@ -15,6 +15,9 @@ interface TransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg histories: DatabaseHistory)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertNew(vararg histories: DatabaseHistory): List<Long>
+
     @Query("DELETE FROM history_table")
     suspend fun clear()
 

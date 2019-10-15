@@ -5,7 +5,6 @@ import ai.tomorrow.tokenbox.data.Wallet
 import ai.tomorrow.tokenbox.data.getDatabase
 import ai.tomorrow.tokenbox.utils.Result
 import android.app.Application
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.web3j.crypto.RawTransaction
@@ -68,7 +67,6 @@ class Web3jDatasource(application: Application) {
             val hexValue = Numeric.toHexString(signedMessage)
             val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send()
             val transactionHash = ethSendTransaction.transactionHash
-            Log.d("XXX", "transactionHash = $transactionHash")
 
             try {
                 if (!transactionHash.isNullOrEmpty()) {
