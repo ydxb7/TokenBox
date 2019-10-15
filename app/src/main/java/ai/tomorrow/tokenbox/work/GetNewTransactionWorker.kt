@@ -20,19 +20,22 @@ class GetNewTransactionWorker(appContext: Context, params: WorkerParameters) :
     val transactionRepository: TransactionRepository by inject()
     val walletRepository: WalletRepository by inject()
 
-    val wallet = walletRepository.getWalletFromPreference()
+    var currentWallet = walletRepository.getWalletFromPreference()
 
-    override suspend fun doWork(): Payload {
+    override suspend fun doWork(): Result {
         return try {
-            val newIds = transactionRepository.newTransaction(wallet.address)
+            val newWallet = walletRepository.getWalletFromPreference()
+            if (currentWallet == newWallet) {
+                val newIds = transactionRepository.newTransaction(currentWallet.address)
+                // TODO 弹出通知
 
-            // TODO 弹出通知
-
-            Log.d("XXX", "newIds = $newIds")
-
-            Payload(Result.SUCCESS)
+                Log.d(WORK_NAME, "XXX newIds = $newIds")
+            } else {
+                currentWallet = newWallet
+            }
+            Result.success()
         } catch (exception: HttpException) {
-            Payload(Result.RETRY)
+            Result.failure()
         }
     }
 

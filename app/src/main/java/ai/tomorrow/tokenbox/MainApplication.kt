@@ -2,7 +2,10 @@ package ai.tomorrow.tokenbox
 
 import ai.tomorrow.tokenbox.work.GetNewTransactionWorker
 import android.app.Application
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,14 +46,18 @@ class MainApplication : Application() {
             .build()
 
         val repeatingRequest = PeriodicWorkRequestBuilder<GetNewTransactionWorker>(
-            5,   // every 5 second
-            TimeUnit.SECONDS
+            15,   // every 5 second
+            TimeUnit.MINUTES
         ).setConstraints(constraints).build()
 
-        WorkManager.getInstance().enqueueUniquePeriodicWork(
-            GetNewTransactionWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
-            repeatingRequest
-        )
+        WorkManager.getInstance(this)
+            .enqueue(repeatingRequest)
+
+
+//        WorkManager.getInstance().enqueueUniquePeriodicWork(
+//            GetNewTransactionWorker.WORK_NAME,
+//            ExistingPeriodicWorkPolicy.KEEP,
+//            repeatingRequest
+//        )
     }
 }
