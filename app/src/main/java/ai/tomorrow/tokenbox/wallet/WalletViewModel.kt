@@ -90,20 +90,21 @@ class WalletViewModel(
      * 2. get new data for database
      */
     fun resetDataset() {
-        val address = _currentAddress.value
-        if (address.isNullOrEmpty()) return
+        val wallet = walletRepository.getWalletFromPreference()
+
+        if (wallet.address.isNullOrEmpty()) return
         uiScope.launch {
-            transactionRepository.resetDbWithNewAddress(address)
+            transactionRepository.resetDbWithNewAddress(wallet.address)
         }
     }
 
     fun refreshAll() {
         Log.d(TAG, "refreshAll")
-        val address = _currentAddress.value
-        if (address.isNullOrEmpty()) return
+        val wallet = walletRepository.getWalletFromPreference()
+        if (wallet.address.isNullOrEmpty()) return
 
         uiScope.launch {
-            transactionRepository.refreshDb(address)
+            transactionRepository.refreshDb(wallet.address)
         }
     }
 
