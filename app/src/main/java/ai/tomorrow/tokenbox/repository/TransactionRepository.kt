@@ -25,7 +25,7 @@ class TransactionRepository(val transactionDatasource: TransactionDatasource) {
         withContext(Dispatchers.IO) {
             mutex.withLock {
                 transactionDatasource.clearHistoryData()
-                refreshDb(address)
+                refresh(address)
             }
         }
     }
