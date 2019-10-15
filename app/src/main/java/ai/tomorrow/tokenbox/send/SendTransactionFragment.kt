@@ -2,7 +2,6 @@ package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.databinding.FragmentSendEthBinding
-import ai.tomorrow.tokenbox.datasource.Web3jDatasource
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,11 +13,11 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.google.zxing.integration.android.IntentIntegrator
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.web3j.utils.Convert
 import java.math.BigInteger
 
@@ -29,7 +28,7 @@ class SendTransactionFragment : Fragment() {
     private lateinit var binding: FragmentSendEthBinding
     private var toast: String? = null
 
-    private lateinit var viewModel: SendTransactionViewModel
+    private val viewModel: SendTransactionViewModel by viewModel()
 
     var gasCount = 21000
 
@@ -40,12 +39,6 @@ class SendTransactionFragment : Fragment() {
     ): View? {
         Log.d(TAG, "onCreateView")
         binding = FragmentSendEthBinding.inflate(inflater, container, false)
-
-        val application = requireNotNull(this.activity).application
-        val viewModelFactory = SendTransactionViewModelFactory(application)
-
-        viewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(SendTransactionViewModel::class.java)
 
         // get balance from bundle
         val balanceString =
@@ -129,7 +122,7 @@ class SendTransactionFragment : Fragment() {
         }
 
         viewModel.navigateUp.observe(this, Observer {
-            if (it == true){
+            if (it == true) {
                 findNavController().navigateUp()
                 viewModel.navagationUpDone()
             }

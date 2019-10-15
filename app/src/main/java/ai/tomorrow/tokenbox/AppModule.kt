@@ -1,5 +1,7 @@
 package ai.tomorrow.tokenbox
 
+import ai.tomorrow.tokenbox.importwallet.ImportWalletViewModel
+import ai.tomorrow.tokenbox.send.SendTransactionViewModel
 import ai.tomorrow.tokenbox.wallet.WalletViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -24,4 +26,6 @@ val appModule = module {
 
     // MyViewModel ViewModel
     viewModel { WalletViewModel(get()) }
+    viewModel { SendTransactionViewModel(get()) }
+    viewModel { ImportWalletViewModel(get()) }
 }

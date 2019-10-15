@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class WalletFragment : Fragment() {
@@ -20,7 +20,7 @@ class WalletFragment : Fragment() {
 
     private var currentAddress: String = ""
 
-    private lateinit var viewModel: WalletViewModel
+    private val viewModel: WalletViewModel by viewModel()
     private lateinit var adapter: HistoryRecyclerViewAdapter
 
     override fun onCreateView(
@@ -30,12 +30,6 @@ class WalletFragment : Fragment() {
     ): View? {
         Log.d(TAG, "onCreateView")
         binding = FragmentWalletBinding.inflate(inflater, container, false)
-
-        val application = requireNotNull(this.activity).application
-
-        val viewModelFactory = WalletViewModelFactory(application)
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(WalletViewModel::class.java)
 
         binding.viewModel = viewModel
 

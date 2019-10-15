@@ -2,7 +2,6 @@ package ai.tomorrow.tokenjar
 
 import ai.tomorrow.tokenbox.databinding.FragmentImportWalletBinding
 import ai.tomorrow.tokenbox.importwallet.ImportWalletViewModel
-import ai.tomorrow.tokenbox.importwallet.ImportWalletViewModelFactory
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,9 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class ImportWalletFragment : Fragment() {
@@ -24,7 +23,7 @@ class ImportWalletFragment : Fragment() {
 
     private var toast: String? = null
 
-    private lateinit var viewModel: ImportWalletViewModel
+    private val viewModel: ImportWalletViewModel by viewModel()
 
 
     override fun onCreateView(
@@ -34,13 +33,6 @@ class ImportWalletFragment : Fragment() {
     ): View? {
         Log.d(TAG, "onCreateView")
         binding = FragmentImportWalletBinding.inflate(inflater, container, false)
-
-        val application = requireNotNull(this.activity).application
-
-        val viewModelFactory = ImportWalletViewModelFactory(application)
-
-        viewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(ImportWalletViewModel::class.java)
 
         setupWidgets()
 
