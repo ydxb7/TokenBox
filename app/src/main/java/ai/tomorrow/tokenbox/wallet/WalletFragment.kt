@@ -112,13 +112,13 @@ class WalletFragment : Fragment() {
         super.onResume()
         Log.d(TAG, "onResume")
         // refresh wallet info in viewModel
-        binding.viewModel?.getCurrentWallet()
+        viewModel.getCurrentWallet()
     }
 
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause")
         // stop updating data
-        binding.viewModel?.stopPollingData()
+        viewModel.stopPollingData()
     }
 }
