@@ -2,6 +2,7 @@ package ai.tomorrow.tokenbox.send
 
 import ai.tomorrow.tokenbox.R
 import ai.tomorrow.tokenbox.databinding.FragmentSendEthBinding
+import ai.tomorrow.tokenbox.datasource.WalletDataSource
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,8 +13,10 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.google.zxing.integration.android.IntentIntegrator
 import org.web3j.utils.Convert
@@ -116,15 +119,18 @@ class SendTransactionFragment : Fragment() {
                 Toast.makeText(context, "Insufficient balance", Toast.LENGTH_SHORT)
                     .show()
             } else {
-                viewModel.makeTransaction(
+
+                val transactionModel = WalletDataSource.TransactionModel(
                     password,
                     keystorePath,
                     myAddress,
                     gasLimitBigInteger,
                     toAddress,
                     amountWei,
-                    it
+                    BigInteger.ZERO
                 )
+
+                viewModel.makeTransaction(transactionModel)
             }
         }
 
@@ -132,6 +138,13 @@ class SendTransactionFragment : Fragment() {
         binding.backBtn.setOnClickListener {
             it.findNavController().navigateUp()
         }
+
+        viewModel.navigateUp.observe(this, Observer {
+            if (it == true){
+                findNavController().navigateUp()
+                viewModel.navagationUpDone()
+            }
+        })
     }
 
     //------------------------------ QR ---------------------------------------------------

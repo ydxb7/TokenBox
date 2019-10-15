@@ -47,9 +47,7 @@ class WalletViewModel @Inject constructor(
         !currentAddress.value.isNullOrBlank()
     }
 
-    private val database = getDatabase(application)
-
-    private val repository = TransactionRepository(database)
+    private val repository = TransactionRepository(application)
 
     // poll data
     private var uiHandler = Handler()

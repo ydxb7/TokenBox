@@ -89,55 +89,13 @@ class SendTransactionViewModel(
                     when (it) {
                         is Result.Success -> {
                             displayToast("You have successfully send a transaction!")
-
+                            _navigateUp.value = true
                         }
+                        is Result.Failure -> displayToast("Transaction failed!")
                     }
                 }
             }
         }
-
-
-        // sendTransaction
-        uiScope.launch {
-            withContext(Dispatchers.IO) {
-                val transactionHash = walletDataSource.sendTransaction(
-                    password,
-                    keystorePath,
-                    myAddress,
-                    gasLimitBigInteger,
-                    toAddress,
-                    amountWei,
-                    gasPriceWei.value
-                )
-
-                if (!transactionHash.isNullOrEmpty()) {
-                    Log.d(TAG, "You have successfully send a transaction!")
-                    val currentTimestamp = Timestamp(Date().time).time
-
-                    val pendingHistory = DatabaseHistory(
-                        0L, currentTimestamp, transactionHash, 0L, "", 0, myAddress, toAddress,
-                        amountWei.toString(), "", "", 2, 0L, 0L, 0L, myAddress
-                    )
-                    database.insert(pendingHistory)
-
-                    uiHandler.post {
-                        Toast.makeText(
-                            application,
-                            "You have successfully send a transaction!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        it.findNavController().navigateUp()
-                    }
-                } else {
-                    uiHandler.post {
-                        Log.d(TAG, "Transaction failed!")
-                        Toast.makeText(application, "Transaction failed!", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-            }
-        }
-
     }
 
     private fun displayToast(message: String) {
