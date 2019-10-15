@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
-import org.consenlabs.tokencore.wallet.Identity
 
 
 class ImportWalletFragment : Fragment() {
@@ -51,7 +50,7 @@ class ImportWalletFragment : Fragment() {
     private fun setupWidgets() {
         binding.importWalletBtn.setOnClickListener {
             if (checkInputValid()) {
-                if (viewModel.loadWalletFromMnemonic(
+                if (viewModel.generateWalletFromMnemonic(
                         binding.mnemonicEv.text.toString().trim(),
                         binding.walletPasswordEt.text.toString().trim(),
                         binding.passwordHintEt.text.toString().trim(),
