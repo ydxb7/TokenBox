@@ -131,6 +131,7 @@ class WalletViewModel(
     override fun onCleared() {
         super.onCleared()
         stopPollingData()
+        viewModelJob.cancel()
 //        backgroundThread.stop()
     }
 

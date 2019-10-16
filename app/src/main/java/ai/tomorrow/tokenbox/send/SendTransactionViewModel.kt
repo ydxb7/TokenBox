@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -28,8 +29,9 @@ class SendTransactionViewModel(
     private val web3jRepository: Web3jRepository by inject()
     private val walletRepository: WalletRepository by inject()
 
-    // cototine
-    private val uiScope = CoroutineScope(Dispatchers.Main)
+    // coroutine
+    private var viewModelJob = Job()
+    private val uiScope = CoroutineScope(viewModelJob + Dispatchers.Main)
     private var uiHandler = Handler()
 
     // vars
@@ -125,5 +127,10 @@ class SendTransactionViewModel(
         uiHandler.post {
             callback.invoke()
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 }
