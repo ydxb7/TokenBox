@@ -1,6 +1,13 @@
-# TokenBox
+# TokenBox - Basic blockchain wallet(Ropsten Testnet ETH)
 
 ![image](DualPhoneTransactionDemo.gif)
+
+- User can use the mnemonic phrase or the corresponding QR code to generate their wallet.
+- User can check the real time balance.
+- User can check real time transaction history.
+- User can send ETH to others by scanning the QR code of other user's address.
+- User can give the QR code of their wallet address to let other user to scan.
+- User can see the real time state of their account.
 
 ## Architecture
 
