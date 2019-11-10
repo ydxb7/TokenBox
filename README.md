@@ -1,5 +1,9 @@
 # TokenBox
 
+![image](DualPhoneTransactionDemo.gif)
+
+## Architecture
+
 ![](g1.png)
 ![](g2.png)
 ![](g3.png)
@@ -45,4 +49,3 @@ ImportWalletFragment -->ImportWalletViewModel
 ImportWalletViewModel --> |create/get wallet|C[WalletRepository]
 ```
 
-![image](DualPhoneTransactionDemo.gif)
